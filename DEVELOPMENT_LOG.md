@@ -100,3 +100,9 @@
     -   Modified the `fetchNews` function to include the `lang` parameter in both `/top-headlines` and `/search` GNews API requests.
     -   Updated the `useEffect` dependency array for `fetchNews` to include `language`.
 -   **Next Steps:** Commit and push changes. Proceed with implementing user preferences (saving/loading settings) and the "Share" feature.
+
+### Back to Top Button Implemented
+
+-   **Objective:** Improve user navigation on long pages.
+-   **Status:** Completed.
+-   **Next Steps:** Proceed with implementing user preferences (saving/loading settings) and the "Share" feature.
