@@ -123,4 +123,4 @@
     -   Added a `handleShare` function in `App.jsx` that utilizes the Web Share API (`navigator.share`) if available.
     -   If the Web Share API is not supported, it falls back to copying the article URL to the clipboard.
     -   Integrated a "Share" button into each news card, which triggers the `handleShare` function with the article's title, description, and URL.
--   **Next Steps:** Commit and push changes. All requested features have been implemented.
+-   **Next Steps:** All requested features have been implemented. Consider further refinements or new features as requested.
