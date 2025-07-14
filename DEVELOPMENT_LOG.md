@@ -78,3 +78,15 @@
 -   **Objective:** Confirm successful implementation and deployment of Phase 2 features.
 -   **Status:** Completed and deployed to GitHub Pages.
 -   **Next Steps:** Proceed with further refinements or new features as requested.
+
+### "Back to Top" Button Implementation
+
+-   **Objective:** Improve user navigation on long pages by adding a "Back to Top" button.
+-   **Changes Made:**
+    -   Introduced `showBackToTop` state in `App.jsx` to control the visibility of the button.
+    -   Added `handleScroll` function to detect scroll position and update `showBackToTop`.
+    -   Implemented `scrollToTop` function to smoothly scroll the page to the top.
+    -   Added an event listener for scroll events to `window`.
+    -   Included the "Back to Top" button in `App.jsx` conditionally rendered based on `showBackToTop`.
+    -   Added basic styling for the button in `App.css` to position it fixed at the bottom right of the screen.
+-   **Next Steps:** Commit and push changes. Proceed with adding more filtering options (source, language, sort order).

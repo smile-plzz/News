@@ -13,6 +13,7 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const fetchNews = async (loadMore = false) => {
     setLoading(true);
@@ -73,6 +74,23 @@ const App = () => {
       document.body.classList.remove('dark-mode');
     }
   }, [darkMode]);
+
+  const handleScroll = () => {
+    if (window.pageYOffset > 300) { // Show button after scrolling down 300px
+      setShowBackToTop(true);
+    } else {
+      setShowBackToTop(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLoadMore = () => {
     setPage((prevPage) => prevPage + 1);
@@ -196,6 +214,16 @@ const App = () => {
           </div>
         )}
       </div>
+
+      {showBackToTop && (
+        <button 
+          onClick={scrollToTop} 
+          className="btn btn-primary back-to-top-btn"
+          title="Back to Top"
+        >
+          &#9650;
+        </button>
+      )}
     </div>
   );
 };
