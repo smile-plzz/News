@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
@@ -57,7 +57,7 @@ const App = () => {
 
   const NEWSAPI_KEY = 'cc55d9392c4a4cb5b866ce342a7d65f3';
 
-  const fetchNews = async (loadMore = false) => {
+  const fetchNews = useCallback(async (loadMore = false) => {
     setLoading(true);
     setError(null);
 
@@ -151,7 +151,7 @@ const App = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [appliedFilters, page]);
 
   // Effect to trigger fetch when appliedFilters change
   useEffect(() => {
@@ -159,7 +159,7 @@ const App = () => {
     setArticles([]); // Clear articles when filters change
     setTotalResults(0); // Reset total results
     fetchNews();
-  }, [appliedFilters]);
+  }, [appliedFilters, fetchNews]);
 
   // Debounce for search term
   useEffect(() => {
@@ -176,7 +176,7 @@ const App = () => {
     if (page > 1) {
       fetchNews(true); // Fetch more when page changes (for load more)
     }
-  }, [page]);
+  }, [page, fetchNews]);
 
   const handleScroll = () => {
     if (window.pageYOffset > 300) { // Show button after scrolling down 300px
@@ -207,7 +207,29 @@ const App = () => {
       searchTerm,
       fromDate,
       toDate,
+      apiSource,
     });
+  };
+
+  const handleShare = async (title, description, url) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: description,
+          url,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      } catch (error) {
+        console.error('Failed to copy:', error);
+      }
+    }
   };
 
   return (
