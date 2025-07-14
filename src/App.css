@@ -132,6 +132,7 @@ body.dark-mode .alert-danger {
   .navbar-collapse {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem; /* Add padding to the collapsed navbar */
   }
 
   .navbar-nav {
@@ -185,6 +186,10 @@ body.dark-mode .alert-danger {
 
   .card-text {
     font-size: 0.9rem;
+  }
+
+  h1 {
+    font-size: 2.5em; /* Adjust h1 font size for mobile */
   }
 }
 

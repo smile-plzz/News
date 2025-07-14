@@ -20,6 +20,7 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [apiSource, setApiSource] = useState(() => localStorage.getItem('newsAppApiSource') || 'gnews');
 
   // New state for applied filters
   const [appliedFilters, setAppliedFilters] = useState({
@@ -28,7 +29,8 @@ const App = () => {
     language: localStorage.getItem('newsAppLanguage') || 'en',
     searchTerm: '',
     fromDate: '',
-    toDate: ''
+    toDate: '',
+    apiSource: localStorage.getItem('newsAppApiSource') || 'gnews',
   });
 
   // Effect to save preferences to localStorage whenever they change
@@ -53,35 +55,94 @@ const App = () => {
     }
   }, [darkMode]);
 
+  const NEWSAPI_KEY = 'cc55d9392c4a4cb5b866ce342a7d65f3';
+
   const fetchNews = async (loadMore = false) => {
     setLoading(true);
     setError(null);
 
-    let url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${appliedFilters.topic}&country=${appliedFilters.country}&lang=${appliedFilters.language}&page=${page}`;
-    if (appliedFilters.searchTerm) {
-      url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${appliedFilters.language}&page=${page}`;
-    }
+    let url;
+    let fetchedArticles = [];
+    let totalArticles = 0;
 
-    if (appliedFilters.fromDate) {
-      url += `&from=${appliedFilters.fromDate}T00:00:00Z`;
-    }
-    if (appliedFilters.toDate) {
-      url += `&to=${appliedFilters.toDate}T23:59:59Z`;
-    }
-    
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch news');
+      if (appliedFilters.apiSource === 'gnews') {
+        if (appliedFilters.topic === 'international') {
+          const internationalCountries = ['us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'in', 'br', 'cn', 'eg', 'gr', 'hk', 'ie', 'it', 'nl'];
+          const randomCountry = internationalCountries[Math.floor(Math.random() * internationalCountries.length)];
+          url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&country=${randomCountry}&lang=${appliedFilters.language}&page=${page}`;
+        } else if (appliedFilters.topic === 'trendy') {
+          url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=general&lang=${appliedFilters.language}&page=${page}`;
+        } else if (appliedFilters.searchTerm) {
+          url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${appliedFilters.language}&page=${page}`;
+        } else {
+          url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${appliedFilters.topic}&country=${appliedFilters.country}&lang=${appliedFilters.language}&page=${page}`;
+        }
+
+        if (appliedFilters.fromDate) {
+          url += `&from=${appliedFilters.fromDate}T00:00:00Z`;
+        }
+        if (appliedFilters.toDate) {
+          url += `&to=${appliedFilters.toDate}T23:59:59Z`;
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch news from GNews');
+        }
+        const data = await response.json();
+        fetchedArticles = data.articles.map(article => ({
+          title: article.title,
+          description: article.description,
+          url: article.url,
+          image: article.image,
+          publishedAt: article.publishedAt,
+          source: article.source.name,
+        }));
+        totalArticles = data.totalArticles;
+
+      } else if (appliedFilters.apiSource === 'newsapi') {
+        // NewsAPI integration
+        let newsApiUrl;
+        if (appliedFilters.topic === 'international' || appliedFilters.topic === 'trendy') {
+          newsApiUrl = `https://newsapi.org/v2/top-headlines?apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
+        } else if (appliedFilters.searchTerm) {
+          newsApiUrl = `https://newsapi.org/v2/everything?q=${appliedFilters.searchTerm}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
+        } else {
+          newsApiUrl = `https://newsapi.org/v2/top-headlines?category=${appliedFilters.topic}&country=${appliedFilters.country}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
+        }
+
+        if (appliedFilters.fromDate) {
+          newsApiUrl += `&from=${appliedFilters.fromDate}T00:00:00`;
+        }
+        if (appliedFilters.toDate) {
+          newsApiUrl += `&to=${appliedFilters.toDate}T23:59:59`;
+        }
+
+        const response = await fetch(newsApiUrl);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to fetch news from NewsAPI');
+        }
+        const data = await response.json();
+        fetchedArticles = data.articles.map(article => ({
+          title: article.title,
+          description: article.description,
+          url: article.url,
+          image: article.urlToImage,
+          publishedAt: article.publishedAt,
+          source: article.source.name,
+        }));
+        totalArticles = data.totalResults;
       }
-      const data = await response.json();
+
       if (loadMore) {
-        setArticles((prevArticles) => [...prevArticles, ...data.articles]);
+        setArticles((prevArticles) => [...prevArticles, ...fetchedArticles]);
       } else {
-        setArticles(data.articles);
+        setArticles(fetchedArticles);
       }
-      setTotalResults(data.totalArticles);
+      setTotalResults(totalArticles);
     } catch (err) {
       console.error("Error fetching news:", err);
       setError(err.message);
@@ -138,11 +199,22 @@ const App = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
+  const handleApplyFilters = () => {
+    setAppliedFilters({
+      topic,
+      country,
+      language,
+      searchTerm,
+      fromDate,
+      toDate,
+    });
+  };
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">Modern News</a>
+          <a className="navbar-brand" href="#">DailyDigest</a>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               {/* Add more nav items here if needed */}
@@ -183,6 +255,13 @@ const App = () => {
           <div className="collapse show" id="filterCollapse">
             <div className="row">
               <div className="col-md-3">
+                <label htmlFor="apiSource">API Source</label>
+                <select id="apiSource" className="form-control" value={apiSource} onChange={(e) => setApiSource(e.target.value)}>
+                  <option value="gnews">GNews API</option>
+                  <option value="newsapi">NewsAPI</option>
+                </select>
+              </div>
+              <div className="col-md-3">
                 <label htmlFor="topic">Topic</label>
                 <select id="topic" className="form-control" value={topic} onChange={(e) => setTopic(e.target.value)}>
                   <option value="general">General</option>
@@ -194,6 +273,8 @@ const App = () => {
                   <option value="sports">Sports</option>
                   <option value="science">Science</option>
                   <option value="health">Health</option>
+              <option value="international">International</option>
+              <option value="trendy">Trendy News</option>
                 </select>
               </div>
               <div className="col-md-3">
