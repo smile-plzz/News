@@ -36,3 +36,18 @@
     -   Added two new input fields (`type="date"`) to the UI for users to select the start and end dates.
     -   Modified the `fetchNews` function to include `from` and `to` parameters in the GNews API request when `fromDate` or `toDate` are set. Dates are formatted as `YYYY-MM-DDThh:mm:ssZ` as required by the API.
 -   **Next Steps:** Commit and push changes, then consider further error handling and pagination.
+
+### Error Handling and Pagination Implementation
+
+-   **Objective:** Improve error feedback to the user and implement basic pagination.
+-   **Changes Made:**
+    -   Introduced an `error` state in `App.jsx` to store and display API error messages.
+    -   Implemented `page` and `totalResults` states to manage pagination.
+    -   Modified the `fetchNews` function to:
+        -   Reset `articles`, `page`, and `totalResults` when filters (`topic`, `country`, `searchTerm`, `fromDate`, `toDate`) change.
+        -   Include the `page` parameter in the GNews API request.
+        -   Append new articles to the `articles` array when `loadMore` is true (for the "Load More" functionality).
+        -   Set the `totalResults` from the API response.
+        -   Catch and display API errors using a Bootstrap alert.
+    -   Added a "Load More" button that appears when there are more articles to fetch, allowing users to load more content.
+-   **Next Steps:** Commit and push changes. Consider further UI/UX refinements or additional features as requested.
