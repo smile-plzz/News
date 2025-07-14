@@ -148,4 +148,4 @@
 -   **Objective:** Display the publication date and time for each news article in the preview.
 -   **Changes Made:**
     -   Modified `App.jsx` to include `article.publishedAt` in the news card, formatted using `toLocaleString()` for better readability.
--   **Next Steps:** Commit and push changes. Continue with other UI/UX refinements or new features.
+-   **Next Steps:** Commit and push changes. Continue with other UI/UX refinements, focusing on overall mobile display and navigation.
