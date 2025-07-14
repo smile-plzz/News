@@ -169,24 +169,6 @@
     -   Addressed linter warnings by adding missing dependencies to `useEffect` hooks and wrapping `fetchNews` in a `useCallback` hook.
 -   **Next Steps:** Continue with other UI/UX refinements or new features.
 
-### Trending Keywords Graph
-
--   **Objective:** Add a new section to display a graph of trending keywords.
--   **Changes Made:**
-    -   Added the `recharts` library to the project.
-    -   Created a new `TrendingKeywords.jsx` component to fetch, process, and display the trending keywords graph.
-    -   Integrated the new component into the main `App.jsx` file.
--   **Next Steps:** Continue with other UI/UX refinements or new features.
-
-### API Fallback Logic
-
--   **Objective:** Implement a fallback mechanism to automatically switch to a different API if the primary one fails.
--   **Changes Made:**
-    -   Modified the `fetchNews` function to include a fallback mechanism that automatically switches to the other API if the primary one fails.
-    -   Updated the UI to reflect which API is currently being used.
-    -   Added error handling to display a message if both APIs fail.
--   **Next Steps:** Continue with other UI/UX refinements or new features.
-
 ### API Key Securing and Trending Keywords API Fallback
 
 -   **Objective:** Secure API keys using environment variables and implement API fallback for trending keywords.
@@ -205,4 +187,14 @@
     -   Modified `App.jsx` to include TheNewsAPI in the `fetchNews` fallback logic (after GNews, before NewsAPI).
     -   Modified `TrendingKeywords.jsx` to include TheNewsAPI in its `fetchAndProcessKeywords` fallback logic (after GNews, before NewsAPI).
     -   Updated the API Source dropdown in `App.jsx` to include TheNewsAPI.
+-   **Next Steps:** Commit and push changes.
+
+### Removed Trending Keywords Graph and UI/UX Enhancements
+
+-   **Objective:** Remove the trending keywords graph and apply new UI/UX design principles.
+-   **Changes Made:**
+    -   Removed the `TrendingKeywords` component from `App.jsx`.
+    -   Deleted the `src/TrendingKeywords.jsx` file.
+    -   Applied Neumorphic Minimalism to key UI elements (buttons, input fields, cards) in `src/App.css` and `src/index.css`.
+    -   Refined global typography and color palette for a cleaner, more modern look.
 -   **Next Steps:** Commit and push changes.

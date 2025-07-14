@@ -35,154 +35,175 @@
 
 /* Neumorphic Card Styles */
 .card {
-  background: #f0f0f0; /* Base color for neumorphism */
+  background: var(--card-background-light); /* Base color for neumorphism */
   border-radius: 15px; /* More rounded for soft look */
-  box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff; /* Soft, extruded shadow */
+  box-shadow: 8px 8px 16px var(--card-shadow-light-1), -8px -8px 16px var(--card-shadow-light-2); /* Soft, extruded shadow */
   padding: 1.5em;
   transition: all 0.3s ease-in-out;
   border: none; /* Remove default border */
 }
 
 .card:hover {
-  box-shadow: 6px 6px 12px #c0c0c0, -6px -6px 12px #ffffff; /* Subtle press effect on hover */
+  box-shadow: 6px 6px 12px var(--card-shadow-light-1), -6px -6px 12px var(--card-shadow-light-2); /* Subtle press effect on hover */
 }
 
 /* Neumorphic Form Control Styles */
 .form-control {
-  background: #f0f0f0;
+  background: var(--card-background-light);
   border: none;
   border-radius: 10px;
-  box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff; /* Inset shadow for pressed look */
+  box-shadow: inset 5px 5px 10px var(--card-shadow-light-1), inset -5px -5px 10px var(--card-shadow-light-2); /* Inset shadow for pressed look */
   padding: 0.75rem 1rem;
-  color: #333;
+  color: var(--text-color-light);
   transition: all 0.3s ease-in-out;
 }
 
 .form-control:focus {
   outline: none;
-  box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff; /* Subtle focus effect */
+  box-shadow: inset 2px 2px 5px var(--card-shadow-light-1), inset -2px -2px 5px var(--card-shadow-light-2); /* Subtle focus effect */
 }
 
 /* Neumorphic Button Styles */
 .btn {
-  background: #f0f0f0;
+  background: var(--button-background-light);
   border: none;
   border-radius: 10px;
-  box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff; /* Extruded button */
-  color: #333;
+  box-shadow: 6px 6px 12px var(--card-shadow-light-1), -6px -6px 12px var(--card-shadow-light-2); /* Extruded button */
+  color: var(--text-color-light);
   padding: 0.75rem 1.5rem;
   transition: all 0.3s ease-in-out;
 }
 
 .btn:hover {
-  box-shadow: 4px 4px 8px #d1d1d1, -4px -4px 8px #ffffff; /* Subtle lift on hover */
+  box-shadow: 4px 4px 8px var(--card-shadow-light-1), -4px -4px 8px var(--card-shadow-light-2); /* Subtle lift on hover */
 }
 
 .btn:active {
-  box-shadow: inset 3px 3px 7px #d1d1d1, inset -3px -3px 7px #ffffff; /* Pressed effect */
+  box-shadow: inset 3px 3px 7px var(--card-shadow-light-1), inset -3px -3px 7px var(--card-shadow-light-2); /* Pressed effect */
 }
 
 /* Dark Mode Neumorphism */
 body.dark-mode {
-  background-color: #2a2a2a;
-  color: #e0e0e0;
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
 }
 
 body.dark-mode .card {
-  background: #2a2a2a;
-  box-shadow: 8px 8px 16px #1a1a1a, -8px -8px 16px #3a3a3a;
+  background: var(--card-background-dark);
+  box-shadow: 8px 8px 16px var(--card-shadow-dark-1), -8px -8px 16px var(--card-shadow-dark-2);
 }
 
 body.dark-mode .card:hover {
-  box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #3a3a3a;
+  box-shadow: 6px 6px 12px var(--card-shadow-dark-1), -6px -6px 12px var(--card-shadow-dark-2);
 }
 
 body.dark-mode .form-control {
-  background: #2a2a2a;
-  color: #e0e0e0;
-  box-shadow: inset 5px 5px 10px #1a1a1a, inset -5px -5px 10px #3a3a3a;
+  background: var(--card-background-dark);
+  color: var(--text-color-dark);
+  box-shadow: inset 5px 5px 10px var(--card-shadow-dark-1), inset -5px -5px 10px var(--card-shadow-dark-2);
 }
 
 body.dark-mode .form-control:focus {
-  box-shadow: inset 2px 2px 5px #1a1a1a, inset -2px -2px 5px #3a3a3a;
+  box-shadow: inset 2px 2px 5px var(--card-shadow-dark-1), inset -2px -2px 5px var(--card-shadow-dark-2);
 }
 
 body.dark-mode .btn {
-  background: #2a2a2a;
-  color: #e0e0e0;
-  box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #3a3a3a;
+  background: var(--button-background-dark);
+  color: var(--text-color-dark);
+  box-shadow: 6px 6px 12px var(--card-shadow-dark-1), -6px -6px 12px var(--card-shadow-dark-2);
 }
 
 body.dark-mode .btn:hover {
-  box-shadow: 4px 4px 8px #1a1a1a, -4px -4px 8px #3a3a3a;
+  box-shadow: 4px 4px 8px var(--card-shadow-dark-1), -4px -4px 8px var(--card-shadow-dark-2);
 }
 
 body.dark-mode .btn:active {
-  box-shadow: inset 3px 3px 7px #1a1a1a, inset -3px -3px 7px #3a3a3a;
+  box-shadow: inset 3px 3px 7px var(--card-shadow-dark-1), inset -3px -3px 7px var(--card-shadow-dark-2);
 }
 
 /* Existing styles adjusted for neumorphism */
 .read-the-docs {
-  color: #888;
+  color: var(--text-color-light);
 }
 
 body.dark-mode .card-title {
-  color: #e0e0e0;
+  color: var(--text-color-dark);
 }
 
 body.dark-mode .card-text {
-  color: #b0b0b0;
+  color: var(--text-color-dark);
 }
 
 body.dark-mode label {
-  color: #e0e0e0;
+  color: var(--text-color-dark);
+}
+
+.navbar {
+  background-color: var(--navbar-background-light);
+  border-bottom: 1px solid var(--card-shadow-light-1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for navbar */
+}
+
+.navbar-brand,
+.nav-link {
+  color: var(--navbar-text-light) !important;
+}
+
+.btn-outline-light {
+  color: var(--navbar-text-light);
+  border-color: var(--navbar-text-light);
+}
+
+.btn-outline-light:hover {
+  background-color: var(--navbar-text-light);
+  color: var(--navbar-background-light);
 }
 
 body.dark-mode .navbar {
-  background-color: #2a2a2a !important;
-  border-bottom: 1px solid #3a3a3a;
+  background-color: var(--navbar-background-dark) !important;
+  border-bottom: 1px solid var(--card-shadow-dark-2);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for navbar */
 }
 
 body.dark-mode .navbar-brand,
 body.dark-mode .nav-link {
-  color: #e0e0e0 !important;
+  color: var(--navbar-text-dark) !important;
 }
 
 body.dark-mode .btn-outline-light {
-  color: #e0e0e0;
-  border-color: #e0e0e0;
+  color: var(--navbar-text-dark);
+  border-color: var(--navbar-text-dark);
 }
 
 body.dark-mode .btn-outline-light:hover {
-  background-color: #e0e0e0;
-  color: #1a1a1a;
+  background-color: var(--navbar-text-dark);
+  color: var(--navbar-background-dark);
 }
 
 body.dark-mode .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 body.dark-mode .btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 body.dark-mode .btn-secondary {
-  background-color: #5a5a5a;
-  border-color: #5a5a5a;
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
 }
 
 body.dark-mode .btn-secondary:hover {
-  background-color: #4a4a4a;
-  border-color: #4a4a4a;
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
 }
 
 body.dark-mode .alert-danger {
-  background-color: #dc3545;
+  background-color: var(--primary-color);
   color: #fff;
-  border-color: #dc3545;
+  border-color: var(--primary-color);
 }
 
 /* Responsive Styles */
@@ -262,12 +283,12 @@ body.dark-mode .alert-danger {
   font-size: 1.3rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   border: none;
 }
 
 body.dark-mode .back-to-top-btn {
-  background-color: #88bfff;
-  color: #1a1a1a;
+  background-color: var(--primary-color);
+  color: var(--navbar-background-dark);
 }

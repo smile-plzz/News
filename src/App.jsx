@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import TrendingKeywords from './TrendingKeywords';
 
 const App = () => {
   // Initialize states with values from localStorage or defaults
@@ -22,6 +21,7 @@ const App = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [apiSource, setApiSource] = useState(() => localStorage.getItem('newsAppApiSource') || 'gnews');
+  const loader = React.useRef(null);
 
   // New state for applied filters
   const [appliedFilters, setAppliedFilters] = useState({
@@ -56,13 +56,13 @@ const App = () => {
     }
   }, [darkMode]);
 
-  const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
-  const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
-  const THENEWSAPI_TOKEN = import.meta.env.VITE_THENEWSAPI_TOKEN;
-
   const fetchNews = useCallback(async (loadMore = false) => {
     setLoading(true);
     setError(null);
+
+    const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
+    const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
+    const THENEWSAPI_TOKEN = import.meta.env.VITE_THENEWSAPI_TOKEN;
 
     const attemptFetch = async (source) => {
       let url;
@@ -75,8 +75,7 @@ const App = () => {
             const internationalCountries = ['us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'in', 'br', 'cn', 'eg', 'gr', 'hk', 'ie', 'it', 'nl'];
             const randomCountry = internationalCountries[Math.floor(Math.random() * internationalCountries.length)];
             url = `https://gnews.io/api/v4/top-headlines?token=${GNEWS_TOKEN}&country=${randomCountry}&lang=${appliedFilters.language}&page=${page}`;
-          } else if (appliedFilters.topic === 'trendy') {
-            url = `https://gnews.io/api/v4/top-headlines?token=${GNEWS_TOKEN}&topic=general&lang=${appliedFilters.language}&page=${page}`;
+          
           } else if (appliedFilters.searchTerm) {
             url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=${GNEWS_TOKEN}&lang=${appliedFilters.language}&page=${page}`;
           } else {
@@ -234,10 +233,23 @@ const App = () => {
   }, [searchTerm]);
 
   useEffect(() => {
-    if (page > 1) {
-      fetchNews(true); // Fetch more when page changes (for load more)
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !loading && articles.length < totalResults) {
+        setPage(prevPage => prevPage + 1);
+      }
+    }, { threshold: 1.0 });
+
+    const currentLoader = loader.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
     }
-  }, [page, fetchNews]);
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [loader, loading, articles.length, totalResults]);
 
   const handleScroll = () => {
     if (window.pageYOffset > 300) { // Show button after scrolling down 300px
@@ -256,9 +268,7 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
+  
 
   const handleApplyFilters = () => {
     setAppliedFilters({
@@ -295,7 +305,7 @@ const App = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">DailyDigest</a>
           <div className="collapse navbar-collapse" id="navbarNav">
@@ -328,7 +338,6 @@ const App = () => {
       </nav>
 
       <div className="container mt-4">
-        <TrendingKeywords />
         <h1 className="my-4 text-center">Latest News</h1>
         <div className="row mb-4">
           <div className="col-12 text-end d-md-none">
@@ -359,7 +368,6 @@ const App = () => {
                   <option value="science">Science</option>
                   <option value="health">Health</option>
               <option value="international">International</option>
-              <option value="trendy">Trendy News</option>
                 </select>
               </div>
               <div className="col-md-3">
@@ -460,11 +468,7 @@ const App = () => {
         )}
 
         {!loading && articles.length > 0 && articles.length < totalResults && (
-          <div className="text-center my-4">
-            <button className="btn btn-secondary" onClick={handleLoadMore}>
-              Load More ({articles.length}/{totalResults})
-            </button>
-          </div>
+          <div ref={loader} style={{ height: '50px', margin: '20px 0' }}></div>
         )}
       </div>
 
