@@ -37,6 +37,7 @@ const TrendingKeywords = () => {
 
       const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
       const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
+      const THENEWSAPI_TOKEN = import.meta.env.VITE_THENEWSAPI_TOKEN;
 
       let titles = '';
       let success = false;
@@ -58,7 +59,24 @@ const TrendingKeywords = () => {
         }
       }
 
-      // If GNews failed or no token, try NewsAPI
+      // If GNews failed or no token, try TheNewsAPI
+      if (!success && THENEWSAPI_TOKEN) {
+        try {
+          const thenewsapiResponse = await fetch(`https://api.thenewsapi.com/v1/news/top?api_token=${THENEWSAPI_TOKEN}&language=en&limit=100`);
+          if (!thenewsapiResponse.ok) {
+            const errorData = await thenewsapiResponse.json();
+            throw new Error(errorData.message || 'Failed to fetch trending data from TheNewsAPI');
+          }
+          const thenewsapiData = await thenewsapiResponse.json();
+          titles = thenewsapiData.data.map(article => article.title).join(' ');
+          success = true;
+        } catch (err) {
+          console.error("Error fetching from TheNewsAPI:", err);
+          setError(err.message);
+        }
+      }
+
+      // If TheNewsAPI failed or no token, try NewsAPI
       if (!success && NEWSAPI_KEY) {
         try {
           const newsapiResponse = await fetch(`https://newsapi.org/v2/top-headlines?apiKey=${NEWSAPI_KEY}&language=en&pageSize=100`);
@@ -80,7 +98,7 @@ const TrendingKeywords = () => {
         setKeywords(processedKeywords);
         setError(null); // Clear any previous errors if successful
       } else {
-        setError('Failed to fetch trending keywords from both GNews and NewsAPI.');
+        setError('Failed to fetch trending keywords from all available APIs.');
         setKeywords([]);
       }
       setLoading(false);

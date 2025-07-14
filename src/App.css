@@ -1,21 +1,21 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: 1400px; /* Slightly wider for more content */
+  margin: 0 auto; /* Center the content */
+  padding: 1rem; /* Reduced padding for a tighter feel */
+  text-align: left; /* Align text to left for better readability */
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 4em; /* Smaller logo */
+  padding: 0.5em;
   will-change: filter;
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 1em #007bffaa); /* Blue shadow for hover */
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 1em #61dafbaa);
 }
 
 @keyframes logo-spin {
@@ -29,96 +29,154 @@
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+    animation: none; /* Remove animation for minimalism */
   }
 }
 
+/* Neumorphic Card Styles */
 .card {
-  padding: 2em;
+  background: #f0f0f0; /* Base color for neumorphism */
+  border-radius: 15px; /* More rounded for soft look */
+  box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff; /* Soft, extruded shadow */
+  padding: 1.5em;
+  transition: all 0.3s ease-in-out;
+  border: none; /* Remove default border */
 }
 
+.card:hover {
+  box-shadow: 6px 6px 12px #c0c0c0, -6px -6px 12px #ffffff; /* Subtle press effect on hover */
+}
+
+/* Neumorphic Form Control Styles */
+.form-control {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 10px;
+  box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff; /* Inset shadow for pressed look */
+  padding: 0.75rem 1rem;
+  color: #333;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+  outline: none;
+  box-shadow: inset 2px 2px 5px #d1d1d1, inset -2px -2px 5px #ffffff; /* Subtle focus effect */
+}
+
+/* Neumorphic Button Styles */
+.btn {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff; /* Extruded button */
+  color: #333;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+  box-shadow: 4px 4px 8px #d1d1d1, -4px -4px 8px #ffffff; /* Subtle lift on hover */
+}
+
+.btn:active {
+  box-shadow: inset 3px 3px 7px #d1d1d1, inset -3px -3px 7px #ffffff; /* Pressed effect */
+}
+
+/* Dark Mode Neumorphism */
+body.dark-mode {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+body.dark-mode .card {
+  background: #2a2a2a;
+  box-shadow: 8px 8px 16px #1a1a1a, -8px -8px 16px #3a3a3a;
+}
+
+body.dark-mode .card:hover {
+  box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #3a3a3a;
+}
+
+body.dark-mode .form-control {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  box-shadow: inset 5px 5px 10px #1a1a1a, inset -5px -5px 10px #3a3a3a;
+}
+
+body.dark-mode .form-control:focus {
+  box-shadow: inset 2px 2px 5px #1a1a1a, inset -2px -2px 5px #3a3a3a;
+}
+
+body.dark-mode .btn {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  box-shadow: 6px 6px 12px #1a1a1a, -6px -6px 12px #3a3a3a;
+}
+
+body.dark-mode .btn:hover {
+  box-shadow: 4px 4px 8px #1a1a1a, -4px -4px 8px #3a3a3a;
+}
+
+body.dark-mode .btn:active {
+  box-shadow: inset 3px 3px 7px #1a1a1a, inset -3px -3px 7px #3a3a3a;
+}
+
+/* Existing styles adjusted for neumorphism */
 .read-the-docs {
   color: #888;
 }
 
-/* Dark Mode Styles */
-body.dark-mode {
-  background-color: #212529; /* Dark background */
-  color: #f8f9fa; /* Light text */
-}
-
-body.dark-mode .card {
-  background-color: #343a40; /* Darker card background */
-  color: #f8f9fa; /* Light text for cards */
-  border-color: #495057; /* Darker border for cards */
-}
-
 body.dark-mode .card-title {
-  color: #f8f9fa;
+  color: #e0e0e0;
 }
 
 body.dark-mode .card-text {
-  color: #ced4da;
-}
-
-body.dark-mode .form-control {
-  background-color: #495057;
-  color: #f8f9fa;
-  border-color: #6c757d;
-}
-
-body.dark-mode .form-control::placeholder {
-  color: #ced4da;
-}
-
-body.dark-mode .form-control:focus {
-  background-color: #495057;
-  color: #f8f9fa;
-  border-color: #86b7fe;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  color: #b0b0b0;
 }
 
 body.dark-mode label {
-  color: #f8f9fa;
+  color: #e0e0e0;
 }
 
 body.dark-mode .navbar {
-  background-color: #343a40 !important; /* Ensure navbar is dark */
+  background-color: #2a2a2a !important;
+  border-bottom: 1px solid #3a3a3a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for navbar */
 }
 
 body.dark-mode .navbar-brand,
 body.dark-mode .nav-link {
-  color: #f8f9fa !important;
+  color: #e0e0e0 !important;
 }
 
 body.dark-mode .btn-outline-light {
-  color: #f8f9fa;
-  border-color: #f8f9fa;
+  color: #e0e0e0;
+  border-color: #e0e0e0;
 }
 
 body.dark-mode .btn-outline-light:hover {
-  background-color: #f8f9fa;
-  color: #212529;
+  background-color: #e0e0e0;
+  color: #1a1a1a;
 }
 
 body.dark-mode .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 body.dark-mode .btn-primary:hover {
-  background-color: #0b5ed7;
-  border-color: #0a58ca;
+  background-color: #0056b3;
+  border-color: #0056b3;
 }
 
 body.dark-mode .btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: #5a5a5a;
+  border-color: #5a5a5a;
 }
 
 body.dark-mode .btn-secondary:hover {
-  background-color: #5c636a;
-  border-color: #565e64;
+  background-color: #4a4a4a;
+  border-color: #4a4a4a;
 }
 
 body.dark-mode .alert-danger {
@@ -132,7 +190,7 @@ body.dark-mode .alert-danger {
   .navbar-collapse {
     flex-direction: column;
     align-items: flex-start;
-    padding: 1rem; /* Add padding to the collapsed navbar */
+    padding: 1rem;
   }
 
   .navbar-nav {
@@ -142,7 +200,7 @@ body.dark-mode .alert-danger {
   .d-flex {
     width: 100%;
     flex-direction: column;
-    align-items: stretch; /* Ensure items stretch to full width */
+    align-items: stretch;
   }
 
   .form-control.me-2 {
@@ -153,7 +211,7 @@ body.dark-mode .alert-danger {
   .form-check.form-switch.ms-3 {
     margin-left: 0 !important;
     margin-top: 0.5rem;
-    margin-bottom: 0.5rem; /* Add some bottom margin */
+    margin-bottom: 0.5rem;
   }
 
   .col-md-3 {
@@ -165,17 +223,15 @@ body.dark-mode .alert-danger {
     margin-bottom: 1rem;
   }
 
-  /* Adjust spacing for filter labels and selects */
   .col-md-3 label {
     margin-bottom: 0.25rem;
   }
 
   .col-md-3 select,
   .col-md-3 input[type="date"] {
-    margin-bottom: 1rem; /* Add space between filter inputs */
+    margin-bottom: 1rem;
   }
 
-  /* Adjust card body padding for smaller screens */
   .card-body {
     padding: 1rem; 
   }
@@ -189,7 +245,7 @@ body.dark-mode .alert-danger {
   }
 
   h1 {
-    font-size: 2.5em; /* Adjust h1 font size for mobile */
+    font-size: 2em;
   }
 }
 
@@ -197,13 +253,21 @@ body.dark-mode .alert-danger {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+body.dark-mode .back-to-top-btn {
+  background-color: #88bfff;
+  color: #1a1a1a;
 }

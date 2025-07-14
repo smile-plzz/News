@@ -196,3 +196,13 @@
     -   Added `.env` to `.gitignore`.
     -   Implemented API fallback logic in `TrendingKeywords.jsx` to use NewsAPI if GNews fails.
 -   **Next Steps:** Continue with other UI/UX refinements or new features.
+
+### TheNewsAPI Integration
+
+-   **Objective:** Integrate TheNewsAPI as an additional fallback option for news and trending keywords.
+-   **Changes Made:**
+    -   Added `VITE_THENEWSAPI_TOKEN` to the `.env` file.
+    -   Modified `App.jsx` to include TheNewsAPI in the `fetchNews` fallback logic (after GNews, before NewsAPI).
+    -   Modified `TrendingKeywords.jsx` to include TheNewsAPI in its `fetchAndProcessKeywords` fallback logic (after GNews, before NewsAPI).
+    -   Updated the API Source dropdown in `App.jsx` to include TheNewsAPI.
+-   **Next Steps:** Commit and push changes.
