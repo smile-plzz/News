@@ -61,3 +61,14 @@
     -   Used a `useEffect` hook to add or remove a `dark-mode` class to the `body` element based on the `darkMode` state.
     -   Modified `App.css` and `index.css` to include styles for the `dark-mode` class, adjusting background colors, text colors, and component-specific styles (cards, forms, buttons, navbar).
 -   **Next Steps:** Commit and push changes. Consider further responsiveness improvements or other features.
+
+### Responsiveness Improvements
+
+-   **Objective:** Enhance the application's layout and usability on smaller screens.
+-   **Changes Made:**
+    -   Added media queries to `App.css` to adjust the layout for screens smaller than 768px (typical mobile devices).
+    -   Modified the navigation bar to stack items vertically on small screens.
+    -   Adjusted the search input and dark mode toggle for better display on mobile.
+    -   Ensured filter dropdowns and date inputs occupy full width on small screens.
+    -   Updated card column behavior to display one card per row on mobile for better readability.
+-   **Next Steps:** Commit and push changes. Consider adding a "Back to Top" button or other minor UI/UX refinements.
