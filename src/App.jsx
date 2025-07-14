@@ -226,7 +226,15 @@ const App = () => {
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{article.title}</h5>
                       <p className="card-text flex-grow-1">{article.description || 'No description available.'}</p>
-                      <a href={article.url} className="btn btn-primary mt-auto" target="_blank" rel="noopener noreferrer">Read More</a>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <a href={article.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer">Read More</a>
+                        <button 
+                          className="btn btn-info" 
+                          onClick={() => handleShare(article.title, article.description, article.url)}
+                        >
+                          Share
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

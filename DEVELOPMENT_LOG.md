@@ -115,3 +115,12 @@
     -   Added `useEffect` hooks for `topic`, `country`, `language`, and `darkMode` to save their current values to `localStorage` whenever they change.
     -   Ensured `darkMode` state is correctly parsed from `localStorage`.
 -   **Next Steps:** Commit and push changes. Proceed with implementing the "Share" feature.
+
+### "Share" Feature Implementation
+
+-   **Objective:** Allow users to share news articles directly from the application.
+-   **Changes Made:**
+    -   Added a `handleShare` function in `App.jsx` that utilizes the Web Share API (`navigator.share`) if available.
+    -   If the Web Share API is not supported, it falls back to copying the article URL to the clipboard.
+    -   Integrated a "Share" button into each news card, which triggers the `handleShare` function with the article's title, description, and URL.
+-   **Next Steps:** Commit and push changes. All requested features have been implemented.
