@@ -106,3 +106,12 @@
 -   **Objective:** Improve user navigation on long pages.
 -   **Status:** Completed.
 -   **Next Steps:** Proceed with implementing user preferences (saving/loading settings) and the "Share" feature.
+
+### User Preferences Implementation
+
+-   **Objective:** Save and load user preferences (topic, country, language, dark mode) using local storage.
+-   **Changes Made:**
+    -   Modified the `useState` initializers for `topic`, `country`, `language`, and `darkMode` to read values from `localStorage`.
+    -   Added `useEffect` hooks for `topic`, `country`, `language`, and `darkMode` to save their current values to `localStorage` whenever they change.
+    -   Ensured `darkMode` state is correctly parsed from `localStorage`.
+-   **Next Steps:** Commit and push changes. Proceed with implementing the "Share" feature.

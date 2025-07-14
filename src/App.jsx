@@ -2,9 +2,16 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
+  // Initialize states with values from localStorage or defaults
+  const [topic, setTopic] = useState(() => localStorage.getItem('newsAppTopic') || 'general');
+  const [country, setCountry] = useState(() => localStorage.getItem('newsAppCountry') || 'us');
+  const [language, setLanguage] = useState(() => localStorage.getItem('newsAppLanguage') || 'en');
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('newsAppDarkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
+
   const [articles, setArticles] = useState([]);
-  const [topic, setTopic] = useState('general');
-  const [country, setCountry] = useState('us');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,9 +19,29 @@ const App = () => {
   const [toDate, setToDate] = useState('');
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [language, setLanguage] = useState('en'); // New state for language
+
+  // Effect to save preferences to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('newsAppTopic', topic);
+  }, [topic]);
+
+  useEffect(() => {
+    localStorage.setItem('newsAppCountry', country);
+  }, [country]);
+
+  useEffect(() => {
+    localStorage.setItem('newsAppLanguage', language);
+  }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem('newsAppDarkMode', JSON.stringify(darkMode));
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   const fetchNews = async (loadMore = false) => {
     setLoading(true);
@@ -67,14 +94,6 @@ const App = () => {
       fetchNews(true); // Fetch more when page changes (for load more)
     }
   }, [page]);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, [darkMode]);
 
   const handleScroll = () => {
     if (window.pageYOffset > 300) { // Show button after scrolling down 300px
