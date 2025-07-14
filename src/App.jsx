@@ -14,14 +14,15 @@ const App = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [language, setLanguage] = useState('en'); // New state for language
 
   const fetchNews = async (loadMore = false) => {
     setLoading(true);
     setError(null);
 
-    let url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${topic}&country=${country}&page=${page}`;
+    let url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${topic}&country=${country}&lang=${language}&page=${page}`;
     if (searchTerm) {
-      url = `https://gnews.io/api/v4/search?q=${searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=en&page=${page}`;
+      url = `https://gnews.io/api/v4/search?q=${searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${language}&page=${page}`;
     }
 
     if (fromDate) {
@@ -59,7 +60,7 @@ const App = () => {
     setArticles([]); // Clear articles when filters change
     setTotalResults(0); // Reset total results
     fetchNews();
-  }, [topic, country, searchTerm, fromDate, toDate]);
+  }, [topic, country, searchTerm, fromDate, toDate, language]); // Add language to dependencies
 
   useEffect(() => {
     if (page > 1) {
@@ -158,6 +159,19 @@ const App = () => {
             </select>
           </div>
           <div className="col-md-3">
+            <label htmlFor="language">Language</label>
+            <select id="language" className="form-control" value={language} onChange={(e) => setLanguage(e.target.value)}>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="pt">Portuguese</option>
+              <option value="ru">Russian</option>
+              <option value="zh">Chinese</option>
+            </select>
+          </div>
+          <div className="col-md-3">
             <label htmlFor="fromDate">From Date</label>
             <input type="date" id="fromDate" className="form-control" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
@@ -227,5 +241,7 @@ const App = () => {
     </div>
   );
 };
+
+export default App;
 
 export default App;

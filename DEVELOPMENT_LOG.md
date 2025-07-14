@@ -90,3 +90,13 @@
     -   Included the "Back to Top" button in `App.jsx` conditionally rendered based on `showBackToTop`.
     -   Added basic styling for the button in `App.css` to position it fixed at the bottom right of the screen.
 -   **Next Steps:** Commit and push changes. Proceed with adding more filtering options (source, language, sort order).
+
+### Language Filtering Implementation
+
+-   **Objective:** Allow users to filter news articles by language.
+-   **Changes Made:**
+    -   Introduced a `language` state in `App.jsx` to manage the selected language (defaulting to 'en').
+    -   Added a new dropdown (`select`) input for language selection in the UI, offering common languages like English, Spanish, French, German, Italian, Portuguese, Russian, and Chinese.
+    -   Modified the `fetchNews` function to include the `lang` parameter in both `/top-headlines` and `/search` GNews API requests.
+    -   Updated the `useEffect` dependency array for `fetchNews` to include `language`.
+-   **Next Steps:** Commit and push changes. Proceed with implementing user preferences (saving/loading settings) and the "Share" feature.
