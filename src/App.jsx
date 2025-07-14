@@ -12,6 +12,7 @@ const App = () => {
   const [toDate, setToDate] = useState('');
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
 
   const fetchNews = async (loadMore = false) => {
     setLoading(true);
@@ -65,6 +66,14 @@ const App = () => {
     }
   }, [page]);
 
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
   const handleLoadMore = () => {
     setPage((prevPage) => prevPage + 1);
   };
@@ -89,6 +98,16 @@ const App = () => {
               />
               <button className="btn btn-outline-light" type="submit">Search</button>
             </form>
+            <div className="form-check form-switch ms-3">
+              <input 
+                className="form-check-input" 
+                type="checkbox" 
+                id="darkModeSwitch" 
+                checked={darkMode} 
+                onChange={() => setDarkMode(!darkMode)}
+              />
+              <label className="form-check-label text-light" htmlFor="darkModeSwitch">Dark Mode</label>
+            </div>
           </div>
         </div>
       </nav>
