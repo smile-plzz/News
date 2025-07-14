@@ -141,6 +141,7 @@ body.dark-mode .alert-danger {
   .d-flex {
     width: 100%;
     flex-direction: column;
+    align-items: stretch; /* Ensure items stretch to full width */
   }
 
   .form-control.me-2 {
@@ -151,6 +152,7 @@ body.dark-mode .alert-danger {
   .form-check.form-switch.ms-3 {
     margin-left: 0 !important;
     margin-top: 0.5rem;
+    margin-bottom: 0.5rem; /* Add some bottom margin */
   }
 
   .col-md-3 {
@@ -160,6 +162,29 @@ body.dark-mode .alert-danger {
 
   .col-md-3:not(:last-child) {
     margin-bottom: 1rem;
+  }
+
+  /* Adjust spacing for filter labels and selects */
+  .col-md-3 label {
+    margin-bottom: 0.25rem;
+  }
+
+  .col-md-3 select,
+  .col-md-3 input[type="date"] {
+    margin-bottom: 1rem; /* Add space between filter inputs */
+  }
+
+  /* Adjust card body padding for smaller screens */
+  .card-body {
+    padding: 1rem; 
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
   }
 }
 

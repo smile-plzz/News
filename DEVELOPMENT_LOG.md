@@ -148,4 +148,21 @@
 -   **Objective:** Display the publication date and time for each news article in the preview.
 -   **Changes Made:**
     -   Modified `App.jsx` to include `article.publishedAt` in the news card, formatted using `toLocaleString()` for better readability.
--   **Next Steps:** Commit and push changes. Continue with other UI/UX refinements, focusing on overall mobile display and navigation.
+-   **Status:** Completed.
+
+### Mobile Display Refinements
+
+-   **Objective:** Further improve the application's layout and usability on smaller screens.
+-   **Changes Made:**
+    -   Adjusted the "Apply Filters" button to be full-width on mobile within the collapsible filter section for better accessibility.
+    -   Ensured filter inputs stack vertically on small screens for improved readability.
+    -   Refined spacing and font sizes for better readability on smaller screens.
+-   **Next Steps:** Commit and push changes. Consider further UI/UX refinements or new features.
+
+### Mobile Display Refinements
+
+-   **Objective:** Further improve the application's layout and usability on smaller screens.
+-   **Changes Made:**
+    -   Adjusted the "Apply Filters" button to be full-width on mobile within the collapsible filter section for better accessibility.
+    -   Ensured filter inputs stack vertically on small screens for improved readability.
+-   **Next Steps:** Commit and push changes. Consider further UI/UX refinements or new features.
