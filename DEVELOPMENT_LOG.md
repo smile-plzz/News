@@ -159,12 +159,30 @@
     -   Refined spacing and font sizes for better readability on smaller screens.
 -   **Next Steps:** Commit and push changes. Consider further UI/UX refinements or new features.
 
-### Mobile Display Refinements
+### Bug Fixes and Code Quality Improvements
 
--   **Objective:** Further improve the application's layout and usability on smaller screens.
+-   **Objective:** Address critical bugs and improve overall code quality.
 -   **Changes Made:**
-    -   Adjusted the "Apply Filters" button to be full-width on mobile within the collapsible filter section for better accessibility.
-    -   Ensured filter inputs stack vertically on small screens for improved readability.
-    -   Refined spacing and font sizes for better readability on smaller screens.
--   **Next Steps:** Commit and push changes. Consider further UI/UX refinements or new features.
+    -   Added the missing `handleShare` function to prevent crashes when clicking the "Share" button.
+    -   Fixed a bug where the API source filter was not being applied correctly.
+    -   Resolved an issue with the main search bar where the search term was not being applied correctly.
+    -   Addressed linter warnings by adding missing dependencies to `useEffect` hooks and wrapping `fetchNews` in a `useCallback` hook.
+-   **Next Steps:** Continue with other UI/UX refinements or new features.
 
+### Trending Keywords Graph
+
+-   **Objective:** Add a new section to display a graph of trending keywords.
+-   **Changes Made:**
+    -   Added the `recharts` library to the project.
+    -   Created a new `TrendingKeywords.jsx` component to fetch, process, and display the trending keywords graph.
+    -   Integrated the new component into the main `App.jsx` file.
+-   **Next Steps:** Continue with other UI/UX refinements or new features.
+
+### API Fallback Logic
+
+-   **Objective:** Implement a fallback mechanism to automatically switch to a different API if the primary one fails.
+-   **Changes Made:**
+    -   Modified the `fetchNews` function to include a fallback mechanism that automatically switches to the other API if the primary one fails.
+    -   Updated the UI to reflect which API is currently being used.
+    -   Added error handling to display a message if both APIs fail.
+-   **Next Steps:** Continue with other UI/UX refinements or new features.

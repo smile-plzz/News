@@ -8,8 +8,10 @@ This is a modern news application built with React and Vite, fetching news artic
 -   **Topic Filtering:** Filter news by various categories like General, World, Technology, Sports, etc.
 -   **Country Filtering:** Filter news by country (US, UK, Canada, Australia, India).
 -   **Search Functionality:** Search for news articles using keywords.
+-   **Trending Keywords:** View a graph of the latest trending keywords.
 -   **Responsive Design:** Adapts to different screen sizes for a seamless user experience.
 -   **Loading Indicator:** Provides visual feedback while news articles are being loaded.
+-   **API Fallback:** Automatically switches to an alternative news API if the primary one fails, ensuring continuous service.
 
 ## Getting Started
 

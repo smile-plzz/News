@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import TrendingKeywords from './TrendingKeywords';
 
 const App = () => {
   // Initialize states with values from localStorage or defaults
@@ -61,96 +62,119 @@ const App = () => {
     setLoading(true);
     setError(null);
 
-    let url;
-    let fetchedArticles = [];
-    let totalArticles = 0;
+    const attemptFetch = async (source) => {
+      let url;
+      let fetchedArticles = [];
+      let totalArticles = 0;
 
-    try {
-      if (appliedFilters.apiSource === 'gnews') {
-        if (appliedFilters.topic === 'international') {
-          const internationalCountries = ['us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'in', 'br', 'cn', 'eg', 'gr', 'hk', 'ie', 'it', 'nl'];
-          const randomCountry = internationalCountries[Math.floor(Math.random() * internationalCountries.length)];
-          url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&country=${randomCountry}&lang=${appliedFilters.language}&page=${page}`;
-        } else if (appliedFilters.topic === 'trendy') {
-          url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=general&lang=${appliedFilters.language}&page=${page}`;
-        } else if (appliedFilters.searchTerm) {
-          url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${appliedFilters.language}&page=${page}`;
+      try {
+        if (source === 'gnews') {
+          if (appliedFilters.topic === 'international') {
+            const internationalCountries = ['us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'in', 'br', 'cn', 'eg', 'gr', 'hk', 'ie', 'it', 'nl'];
+            const randomCountry = internationalCountries[Math.floor(Math.random() * internationalCountries.length)];
+            url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&country=${randomCountry}&lang=${appliedFilters.language}&page=${page}`;
+          } else if (appliedFilters.topic === 'trendy') {
+            url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=general&lang=${appliedFilters.language}&page=${page}`;
+          } else if (appliedFilters.searchTerm) {
+            url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${appliedFilters.language}&page=${page}`;
+          } else {
+            url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${appliedFilters.topic}&country=${appliedFilters.country}&lang=${appliedFilters.language}&page=${page}`;
+          }
+
+          if (appliedFilters.fromDate) {
+            url += `&from=${appliedFilters.fromDate}T00:00:00Z`;
+          }
+          if (appliedFilters.toDate) {
+            url += `&to=${appliedFilters.toDate}T23:59:59Z`;
+          }
+
+          const response = await fetch(url);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch news from GNews');
+          }
+          const data = await response.json();
+          fetchedArticles = data.articles.map(article => ({
+            title: article.title,
+            description: article.description,
+            url: article.url,
+            image: article.image,
+            publishedAt: article.publishedAt,
+            source: article.source.name,
+          }));
+          totalArticles = data.totalArticles;
+
+        } else if (source === 'newsapi') {
+          // NewsAPI integration
+          let newsApiUrl;
+          if (appliedFilters.topic === 'international' || appliedFilters.topic === 'trendy') {
+            newsApiUrl = `https://newsapi.org/v2/top-headlines?apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
+          } else if (appliedFilters.searchTerm) {
+            newsApiUrl = `https://newsapi.org/v2/everything?q=${appliedFilters.searchTerm}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
+          } else {
+            newsApiUrl = `https://newsapi.org/v2/top-headlines?category=${appliedFilters.topic}&country=${appliedFilters.country}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
+          }
+
+          if (appliedFilters.fromDate) {
+            newsApiUrl += `&from=${appliedFilters.fromDate}T00:00:00`;
+          }
+          if (appliedFilters.toDate) {
+            newsApiUrl += `&to=${appliedFilters.toDate}T23:59:59`;
+          }
+
+          const response = await fetch(newsApiUrl);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to fetch news from NewsAPI');
+          }
+          const data = await response.json();
+          fetchedArticles = data.articles.map(article => ({
+            title: article.title,
+            description: article.description,
+            url: article.url,
+            image: article.urlToImage,
+            publishedAt: article.publishedAt,
+            source: article.source.name,
+          }));
+          totalArticles = data.totalResults;
+        }
+
+        if (loadMore) {
+          setArticles((prevArticles) => [...prevArticles, ...fetchedArticles]);
         } else {
-          url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${appliedFilters.topic}&country=${appliedFilters.country}&lang=${appliedFilters.language}&page=${page}`;
+          setArticles(fetchedArticles);
         }
+        setTotalResults(totalArticles);
+        setApiSource(source); // Update the UI to show the current API source
+        return true; // Indicate success
 
-        if (appliedFilters.fromDate) {
-          url += `&from=${appliedFilters.fromDate}T00:00:00Z`;
-        }
-        if (appliedFilters.toDate) {
-          url += `&to=${appliedFilters.toDate}T23:59:59Z`;
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch news from GNews');
-        }
-        const data = await response.json();
-        fetchedArticles = data.articles.map(article => ({
-          title: article.title,
-          description: article.description,
-          url: article.url,
-          image: article.image,
-          publishedAt: article.publishedAt,
-          source: article.source.name,
-        }));
-        totalArticles = data.totalArticles;
-
-      } else if (appliedFilters.apiSource === 'newsapi') {
-        // NewsAPI integration
-        let newsApiUrl;
-        if (appliedFilters.topic === 'international' || appliedFilters.topic === 'trendy') {
-          newsApiUrl = `https://newsapi.org/v2/top-headlines?apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
-        } else if (appliedFilters.searchTerm) {
-          newsApiUrl = `https://newsapi.org/v2/everything?q=${appliedFilters.searchTerm}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
-        } else {
-          newsApiUrl = `https://newsapi.org/v2/top-headlines?category=${appliedFilters.topic}&country=${appliedFilters.country}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
-        }
-
-        if (appliedFilters.fromDate) {
-          newsApiUrl += `&from=${appliedFilters.fromDate}T00:00:00`;
-        }
-        if (appliedFilters.toDate) {
-          newsApiUrl += `&to=${appliedFilters.toDate}T23:59:59`;
-        }
-
-        const response = await fetch(newsApiUrl);
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to fetch news from NewsAPI');
-        }
-        const data = await response.json();
-        fetchedArticles = data.articles.map(article => ({
-          title: article.title,
-          description: article.description,
-          url: article.url,
-          image: article.urlToImage,
-          publishedAt: article.publishedAt,
-          source: article.source.name,
-        }));
-        totalArticles = data.totalResults;
+      } catch (err) {
+        console.error(`Error fetching news from ${source}:`, err);
+        setError(err.message);
+        return false; // Indicate failure
       }
+    };
 
-      if (loadMore) {
-        setArticles((prevArticles) => [...prevArticles, ...fetchedArticles]);
+    const primarySource = appliedFilters.apiSource;
+    const fallbackSource = primarySource === 'gnews' ? 'newsapi' : 'gnews';
+
+    const success = await attemptFetch(primarySource);
+
+    if (!success) {
+      console.log(`Primary API (${primarySource}) failed, trying fallback (${fallbackSource})...`);
+      setApiSource(fallbackSource); // Immediately update the UI
+      const fallbackSuccess = await attemptFetch(fallbackSource);
+      if (!fallbackSuccess) {
+        setError('Both GNews and NewsAPI failed to fetch news. Please try again later.');
+        setArticles([]);
+        setTotalResults(0);
       } else {
-        setArticles(fetchedArticles);
+        // Make the fallback permanent
+        setAppliedFilters(prev => ({ ...prev, apiSource: fallbackSource }));
       }
-      setTotalResults(totalArticles);
-    } catch (err) {
-      console.error("Error fetching news:", err);
-      setError(err.message);
-      setArticles([]);
-      setTotalResults(0);
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   }, [appliedFilters, page]);
 
   // Effect to trigger fetch when appliedFilters change
@@ -267,6 +291,7 @@ const App = () => {
       </nav>
 
       <div className="container mt-4">
+        <TrendingKeywords />
         <h1 className="my-4 text-center">Latest News</h1>
         <div className="row mb-4">
           <div className="col-12 text-end d-md-none">
