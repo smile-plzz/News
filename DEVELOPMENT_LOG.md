@@ -165,4 +165,6 @@
 -   **Changes Made:**
     -   Adjusted the "Apply Filters" button to be full-width on mobile within the collapsible filter section for better accessibility.
     -   Ensured filter inputs stack vertically on small screens for improved readability.
+    -   Refined spacing and font sizes for better readability on smaller screens.
 -   **Next Steps:** Commit and push changes. Consider further UI/UX refinements or new features.
+
