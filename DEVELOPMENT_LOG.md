@@ -27,3 +27,12 @@
 -   **Objective:** Confirm successful implementation and deployment of Phase 1 features.
 -   **Status:** Completed and deployed to GitHub Pages.
 -   **Next Steps:** Proceed with Phase 2: Advanced Filtering (Date Filtering) and Error Handling refinements.
+
+### Date Filtering Implementation
+
+-   **Objective:** Add functionality to filter news articles by a specific date range.
+-   **Changes Made:**
+    -   Introduced `fromDate` and `toDate` states in `App.jsx` to manage the date range.
+    -   Added two new input fields (`type="date"`) to the UI for users to select the start and end dates.
+    -   Modified the `fetchNews` function to include `from` and `to` parameters in the GNews API request when `fromDate` or `toDate` are set. Dates are formatted as `YYYY-MM-DDThh:mm:ssZ` as required by the API.
+-   **Next Steps:** Commit and push changes, then consider further error handling and pagination.

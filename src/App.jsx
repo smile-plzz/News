@@ -7,6 +7,8 @@ const App = () => {
   const [country, setCountry] = useState('us');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -14,6 +16,13 @@ const App = () => {
       let url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${topic}&country=${country}`;
       if (searchTerm) {
         url = `https://gnews.io/api/v4/search?q=${searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=en`;
+      }
+
+      if (fromDate) {
+        url += `&from=${fromDate}T00:00:00Z`;
+      }
+      if (toDate) {
+        url += `&to=${toDate}T23:59:59Z`;
       }
       
       try {
@@ -29,7 +38,7 @@ const App = () => {
     };
 
     fetchNews();
-  }, [topic, country, searchTerm]);
+  }, [topic, country, searchTerm, fromDate, toDate]);
 
   return (
     <div>
@@ -58,7 +67,7 @@ const App = () => {
       <div className="container mt-4">
         <h1 className="my-4 text-center">Latest News</h1>
         <div className="row mb-4">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <label htmlFor="topic">Topic</label>
             <select id="topic" className="form-control" value={topic} onChange={(e) => setTopic(e.target.value)}>
               <option value="general">General</option>
@@ -72,7 +81,7 @@ const App = () => {
               <option value="health">Health</option>
             </select>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
             <label htmlFor="country">Country</label>
             <select id="country" className="form-control" value={country} onChange={(e) => setCountry(e.target.value)}>
               <option value="us">United States</option>
@@ -81,6 +90,14 @@ const App = () => {
               <option value="au">Australia</option>
               <option value="in">India</option>
             </select>
+          </div>
+          <div className="col-md-4">
+            <label htmlFor="fromDate">From Date</label>
+            <input type="date" id="fromDate" className="form-control" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+          </div>
+          <div className="col-md-4">
+            <label htmlFor="toDate">To Date</label>
+            <input type="date" id="toDate" className="form-control" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
         </div>
 
