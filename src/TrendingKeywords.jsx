@@ -35,26 +35,55 @@ const TrendingKeywords = () => {
       setLoading(true);
       setError(null);
 
-      try {
-        // Fetch top headlines to analyze for keywords
-        const response = await fetch('https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&lang=en&max=100');
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch trending data');
+      const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
+      const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
+
+      let titles = '';
+      let success = false;
+
+      // Try GNews first
+      if (GNEWS_TOKEN) {
+        try {
+          const gnewsResponse = await fetch(`https://gnews.io/api/v4/top-headlines?token=${GNEWS_TOKEN}&lang=en&max=100`);
+          if (!gnewsResponse.ok) {
+            const errorData = await gnewsResponse.json();
+            throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch trending data from GNews');
+          }
+          const gnewsData = await gnewsResponse.json();
+          titles = gnewsData.articles.map(article => article.title).join(' ');
+          success = true;
+        } catch (err) {
+          console.error("Error fetching from GNews:", err);
+          setError(err.message);
         }
-        const data = await response.json();
-        
-        // Process titles to extract keywords
-        const titles = data.articles.map(article => article.title).join(' ');
+      }
+
+      // If GNews failed or no token, try NewsAPI
+      if (!success && NEWSAPI_KEY) {
+        try {
+          const newsapiResponse = await fetch(`https://newsapi.org/v2/top-headlines?apiKey=${NEWSAPI_KEY}&language=en&pageSize=100`);
+          if (!newsapiResponse.ok) {
+            const errorData = await newsapiResponse.json();
+            throw new Error(errorData.message || 'Failed to fetch trending data from NewsAPI');
+          }
+          const newsapiData = await newsapiResponse.json();
+          titles = newsapiData.articles.map(article => article.title).join(' ');
+          success = true;
+        } catch (err) {
+          console.error("Error fetching from NewsAPI:", err);
+          setError(err.message);
+        }
+      }
+
+      if (success) {
         const processedKeywords = processText(titles);
         setKeywords(processedKeywords);
-
-      } catch (err) {
-        console.error("Error processing keywords:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setError(null); // Clear any previous errors if successful
+      } else {
+        setError('Failed to fetch trending keywords from both GNews and NewsAPI.');
+        setKeywords([]);
       }
+      setLoading(false);
     };
 
     fetchAndProcessKeywords();

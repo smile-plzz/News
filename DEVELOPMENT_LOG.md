@@ -186,3 +186,13 @@
     -   Updated the UI to reflect which API is currently being used.
     -   Added error handling to display a message if both APIs fail.
 -   **Next Steps:** Continue with other UI/UX refinements or new features.
+
+### API Key Securing and Trending Keywords API Fallback
+
+-   **Objective:** Secure API keys using environment variables and implement API fallback for trending keywords.
+-   **Changes Made:**
+    -   Created a `.env` file to store API keys.
+    -   Updated `App.jsx` and `TrendingKeywords.jsx` to use API keys from environment variables.
+    -   Added `.env` to `.gitignore`.
+    -   Implemented API fallback logic in `TrendingKeywords.jsx` to use NewsAPI if GNews fails.
+-   **Next Steps:** Continue with other UI/UX refinements or new features.

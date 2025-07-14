@@ -56,7 +56,8 @@ const App = () => {
     }
   }, [darkMode]);
 
-  const NEWSAPI_KEY = 'cc55d9392c4a4cb5b866ce342a7d65f3';
+  const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
+  const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
 
   const fetchNews = useCallback(async (loadMore = false) => {
     setLoading(true);
