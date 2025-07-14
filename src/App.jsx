@@ -21,6 +21,16 @@ const App = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
+  // New state for applied filters
+  const [appliedFilters, setAppliedFilters] = useState({
+    topic: localStorage.getItem('newsAppTopic') || 'general',
+    country: localStorage.getItem('newsAppCountry') || 'us',
+    language: localStorage.getItem('newsAppLanguage') || 'en',
+    searchTerm: '',
+    fromDate: '',
+    toDate: ''
+  });
+
   // Effect to save preferences to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('newsAppTopic', topic);
@@ -47,16 +57,16 @@ const App = () => {
     setLoading(true);
     setError(null);
 
-    let url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${topic}&country=${country}&lang=${language}&page=${page}`;
-    if (searchTerm) {
-      url = `https://gnews.io/api/v4/search?q=${searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${language}&page=${page}`;
+    let url = `https://gnews.io/api/v4/top-headlines?token=70f8f36aed5c9ccfb722c933455bc237&topic=${appliedFilters.topic}&country=${appliedFilters.country}&lang=${appliedFilters.language}&page=${page}`;
+    if (appliedFilters.searchTerm) {
+      url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=70f8f36aed5c9ccfb722c933455bc237&lang=${appliedFilters.language}&page=${page}`;
     }
 
-    if (fromDate) {
-      url += `&from=${fromDate}T00:00:00Z`;
+    if (appliedFilters.fromDate) {
+      url += `&from=${appliedFilters.fromDate}T00:00:00Z`;
     }
-    if (toDate) {
-      url += `&to=${toDate}T23:59:59Z`;
+    if (appliedFilters.toDate) {
+      url += `&to=${appliedFilters.toDate}T23:59:59Z`;
     }
     
     try {
@@ -82,12 +92,24 @@ const App = () => {
     }
   };
 
+  // Effect to trigger fetch when appliedFilters change
   useEffect(() => {
     setPage(1); // Reset page when filters change
     setArticles([]); // Clear articles when filters change
     setTotalResults(0); // Reset total results
     fetchNews();
-  }, [topic, country, searchTerm, fromDate, toDate, language]); // Add language to dependencies
+  }, [appliedFilters]);
+
+  // Debounce for search term
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setAppliedFilters(prev => ({ ...prev, searchTerm }));
+    }, 500); // 500ms debounce
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
 
   useEffect(() => {
     if (page > 1) {
@@ -153,50 +175,73 @@ const App = () => {
       <div className="container mt-4">
         <h1 className="my-4 text-center">Latest News</h1>
         <div className="row mb-4">
-          <div className="col-md-3">
-            <label htmlFor="topic">Topic</label>
-            <select id="topic" className="form-control" value={topic} onChange={(e) => setTopic(e.target.value)}>
-              <option value="general">General</option>
-              <option value="world">World</option>
-              <option value="nation">Nation</option>
-              <option value="business">Business</option>
-              <option value="technology">Technology</option>
-              <option value="entertainment">Entertainment</option>
-              <option value="sports">Sports</option>
-              <option value="science">Science</option>
-              <option value="health">Health</option>
-            </select>
+          <div className="col-12 text-end d-md-none">
+            <button className="btn btn-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+              Toggle Filters
+            </button>
           </div>
-          <div className="col-md-3">
-            <label htmlFor="country">Country</label>
-            <select id="country" className="form-control" value={country} onChange={(e) => setCountry(e.target.value)}>
-              <option value="us">United States</option>
-              <option value="gb">United Kingdom</option>
-              <option value="ca">Canada</option>
-              <option value="au">Australia</option>
-              <option value="in">India</option>
-            </select>
-          </div>
-          <div className="col-md-3">
-            <label htmlFor="language">Language</label>
-            <select id="language" className="form-control" value={language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="it">Italian</option>
-              <option value="pt">Portuguese</option>
-              <option value="ru">Russian</option>
-              <option value="zh">Chinese</option>
-            </select>
-          </div>
-          <div className="col-md-3">
-            <label htmlFor="fromDate">From Date</label>
-            <input type="date" id="fromDate" className="form-control" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-          </div>
-          <div className="col-md-3">
-            <label htmlFor="toDate">To Date</label>
-            <input type="date" id="toDate" className="form-control" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+          <div className="collapse show" id="filterCollapse">
+            <div className="row">
+              <div className="col-md-3">
+                <label htmlFor="topic">Topic</label>
+                <select id="topic" className="form-control" value={topic} onChange={(e) => setTopic(e.target.value)}>
+                  <option value="general">General</option>
+                  <option value="world">World</option>
+                  <option value="nation">Nation</option>
+                  <option value="business">Business</option>
+                  <option value="technology">Technology</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="sports">Sports</option>
+                  <option value="science">Science</option>
+                  <option value="health">Health</option>
+                </select>
+              </div>
+              <div className="col-md-3">
+                <label htmlFor="country">Country</label>
+                <select id="country" className="form-control" value={country} onChange={(e) => setCountry(e.target.value)}>
+                  <option value="us">United States</option>
+                  <option value="gb">United Kingdom</option>
+                  <option value="ca">Canada</option>
+                  <option value="au">Australia</option>
+                  <option value="in">India</option>
+                  <option value="br">Brazil</option>
+                  <option value="cn">China</option>
+                  <option value="eg">Egypt</option>
+                  <option value="fr">French</option>
+                  <option value="de">Germany</option>
+                  <option value="gr">Greece</option>
+                  <option value="hk">Hong Kong</option>
+                  <option value="ie">Ireland</option>
+                  <option value="it">Italian</option>
+                  <option value="jp">Japan</option>
+                  <option value="nl">Netherlands</option>
+                </select>
+              </div>
+              <div className="col-md-3">
+                <label htmlFor="language">Language</label>
+                <select id="language" className="form-control" value={language} onChange={(e) => setLanguage(e.target.value)}>
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="it">Italian</option>
+                  <option value="pt">Portuguese</option>
+                  <option value="ru">Russian</option>
+                  <option value="zh">Chinese</option>
+                </select>
+              </div>
+              <div className="col-md-3">
+                <label htmlFor="fromDate">From Date</label>
+                <input type="date" id="fromDate" className="form-control" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+              </div>
+              <div className="col-md-3">
+                <label htmlFor="toDate">To Date</label>
+                <input type="date" id="toDate" className="form-control" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+              </div>
+              <div className="col-12 mt-3 d-grid">
+                <button className="btn btn-primary" onClick={handleApplyFilters}>Apply Filters</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -226,6 +271,7 @@ const App = () => {
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{article.title}</h5>
                       <p className="card-text flex-grow-1">{article.description || 'No description available.'}</p>
+                      <p className="card-text"><small className="text-muted">Published: {new Date(article.publishedAt).toLocaleString()}</small></p>
                       <div className="d-flex justify-content-between align-items-center">
                         <a href={article.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer">Read More</a>
                         <button 

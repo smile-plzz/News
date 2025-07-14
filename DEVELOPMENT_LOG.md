@@ -124,3 +124,28 @@
     -   If the Web Share API is not supported, it falls back to copying the article URL to the clipboard.
     -   Integrated a "Share" button into each news card, which triggers the `handleShare` function with the article's title, description, and URL.
 -   **Next Steps:** All requested features have been implemented. Consider further refinements or new features as requested.
+
+### UI/UX Refinement: Explicit Filter Application and Debounced Search Input
+
+-   **Objective:** Improve user interaction and performance for filtering and searching.
+-   **Changes Made:**
+    -   Introduced an `appliedFilters` state to hold the filters that are actively applied to the news fetch.
+    -   Modified the `useEffect` hook that fetches news to depend on `appliedFilters` instead of individual filter states.
+    -   Added an "Apply Filters" button. Clicking this button updates the `appliedFilters` state, triggering a new news fetch.
+    -   Implemented debouncing for the `searchTerm` input. The `appliedFilters.searchTerm` is only updated after a 500ms delay, reducing the number of API calls while the user is typing.
+    -   Adjusted the UI to include the "Apply Filters" button, making it full-width on mobile for better accessibility.
+-   **Next Steps:** Commit and push changes. Continue with other UI/UX refinements, focusing on overall mobile display and navigation.
+
+### Expanded Country Options
+
+-   **Objective:** Provide a wider range of country options for news filtering.
+-   **Changes Made:**
+    -   Added more country options (Brazil, China, Egypt, France, Germany, Greece, Hong Kong, Ireland, Italy, Japan, Netherlands) to the country dropdown in `App.jsx`.
+-   **Next Steps:** Commit and push changes. Continue with other UI/UX refinements or new features.
+
+### Date and Time in News Preview
+
+-   **Objective:** Display the publication date and time for each news article in the preview.
+-   **Changes Made:**
+    -   Modified `App.jsx` to include `article.publishedAt` in the news card, formatted using `toLocaleString()` for better readability.
+-   **Next Steps:** Commit and push changes. Continue with other UI/UX refinements or new features.
