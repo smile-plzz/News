@@ -15,6 +15,15 @@ This is a modern news application built with React and Vite, fetching news artic
 -   **Loading Indicator:** Provides visual feedback while news articles are being loaded.
 -   **API Fallback:** Automatically switches to an alternative news API (GNews, TheNewsAPI, NewsAPI) if the primary one fails, ensuring continuous service.
 
+## Technologies Used
+
+-   [React](https://reactjs.org/)
+-   [Vite](https://vitejs.dev/)
+-   [GNews API](https://gnews.io/)
+-   [Bootstrap](https://getbootstrap.com/)
+-   [Recharts](https://recharts.org/)
+-   [GitHub Pages](https://pages.github.com/)
+
 ## Getting Started
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
