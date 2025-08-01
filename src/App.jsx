@@ -21,7 +21,7 @@ const App = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [apiSource, setApiSource] = useState(() => localStorage.getItem('newsAppApiSource') || 'gnews');
-  const loader = React.useRef(null);
+  
 
   // New state for applied filters
   const [appliedFilters, setAppliedFilters] = useState({
@@ -232,24 +232,9 @@ const App = () => {
     };
   }, [searchTerm]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !loading && articles.length < totalResults) {
-        setPage(prevPage => prevPage + 1);
-      }
-    }, { threshold: 1.0 });
-
-    const currentLoader = loader.current;
-    if (currentLoader) {
-      observer.observe(currentLoader);
-    }
-
-    return () => {
-      if (currentLoader) {
-        observer.unobserve(currentLoader);
-      }
-    };
-  }, [loader, loading, articles.length, totalResults]);
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
 
   const handleScroll = () => {
     if (window.pageYOffset > 300) { // Show button after scrolling down 300px
@@ -463,7 +448,9 @@ const App = () => {
         )}
 
         {!loading && articles.length > 0 && articles.length < totalResults && (
-          <div ref={loader} style={{ height: '50px', margin: '20px 0' }}></div>
+          <div className="text-center my-4">
+            <button className="btn btn-primary" onClick={handleLoadMore}>Load More</button>
+          </div>
         )}
       </div>
 
