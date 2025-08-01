@@ -60,157 +60,42 @@ const App = () => {
     setLoading(true);
     setError(null);
 
-    const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
-    const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
-    const THENEWSAPI_TOKEN = import.meta.env.VITE_THENEWSAPI_TOKEN;
+    try {
+      const { topic, country, language, searchTerm, fromDate, toDate, apiSource } = appliedFilters;
+      const params = new URLSearchParams({
+        topic,
+        country,
+        language,
+        searchTerm,
+        fromDate,
+        toDate,
+        page,
+        apiSource,
+      });
 
-    const attemptFetch = async (source) => {
-      let url;
-      let fetchedArticles = [];
-      let totalArticles = 0;
-
-      try {
-        if (source === 'gnews') {
-          if (appliedFilters.topic === 'international') {
-            const internationalCountries = ['us', 'gb', 'ca', 'au', 'de', 'fr', 'jp', 'in', 'br', 'cn', 'eg', 'gr', 'hk', 'ie', 'it', 'nl'];
-            const randomCountry = internationalCountries[Math.floor(Math.random() * internationalCountries.length)];
-            url = `https://gnews.io/api/v4/top-headlines?token=${GNEWS_TOKEN}&country=${randomCountry}&lang=${appliedFilters.language}&page=${page}`;
-          
-          } else if (appliedFilters.searchTerm) {
-            url = `https://gnews.io/api/v4/search?q=${appliedFilters.searchTerm}&token=${GNEWS_TOKEN}&lang=${appliedFilters.language}&page=${page}`;
-          } else {
-            url = `https://gnews.io/api/v4/top-headlines?token=${GNEWS_TOKEN}&topic=${appliedFilters.topic}&country=${appliedFilters.country}&lang=${appliedFilters.language}&page=${page}`;
-          }
-
-          if (appliedFilters.fromDate) {
-            url += `&from=${appliedFilters.fromDate}T00:00:00Z`;
-          }
-          if (appliedFilters.toDate) {
-            url += `&to=${appliedFilters.toDate}T23:59:59Z`;
-          }
-
-          const response = await fetch(url);
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.errors ? errorData.errors[0] : 'Failed to fetch news from GNews');
-          }
-          const data = await response.json();
-          fetchedArticles = data.articles.map(article => ({
-            title: article.title,
-            description: article.description,
-            url: article.url,
-            image: article.image,
-            publishedAt: article.publishedAt,
-            source: article.source.name,
-          }));
-          totalArticles = data.totalArticles;
-
-        } else if (source === 'thenewsapi') {
-          // TheNewsAPI integration
-          let thenewsapiUrl;
-          if (appliedFilters.topic === 'international' || appliedFilters.topic === 'trendy') {
-            thenewsapiUrl = `https://api.thenewsapi.com/v1/news/top?api_token=${THENEWSAPI_TOKEN}&language=${appliedFilters.language}&limit=100`;
-          } else if (appliedFilters.searchTerm) {
-            thenewsapiUrl = `https://api.thenewsapi.com/v1/news/all?api_token=${THENEWSAPI_TOKEN}&search=${appliedFilters.searchTerm}&language=${appliedFilters.language}&limit=100`;
-          } else {
-            thenewsapiUrl = `https://api.thenewsapi.com/v1/news/top?api_token=${THENEWSAPI_TOKEN}&categories=${appliedFilters.topic}&language=${appliedFilters.language}&limit=100`;
-          }
-
-          if (appliedFilters.fromDate) {
-            thenewsapiUrl += `&published_after=${appliedFilters.fromDate}T00:00:00`;
-          }
-          if (appliedFilters.toDate) {
-            thenewsapiUrl += `&published_before=${appliedFilters.toDate}T23:59:59`;
-          }
-
-          const response = await fetch(thenewsapiUrl);
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to fetch news from TheNewsAPI');
-          }
-          const data = await response.json();
-          fetchedArticles = data.data.map(article => ({
-            title: article.title,
-            description: article.description,
-            url: article.url,
-            image: article.image_url,
-            publishedAt: article.published_at,
-            source: article.source,
-          }));
-          totalArticles = data.meta.found;
-
-        } else if (source === 'newsapi') {
-          // NewsAPI integration
-          let newsApiUrl;
-          if (appliedFilters.topic === 'international' || appliedFilters.topic === 'trendy') {
-            newsApiUrl = `https://newsapi.org/v2/top-headlines?apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
-          } else if (appliedFilters.searchTerm) {
-            newsApiUrl = `https://newsapi.org/v2/everything?q=${appliedFilters.searchTerm}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
-          } else {
-            newsApiUrl = `https://newsapi.org/v2/top-headlines?category=${appliedFilters.topic}&country=${appliedFilters.country}&apiKey=${NEWSAPI_KEY}&language=${appliedFilters.language}&page=${page}`;
-          }
-
-          if (appliedFilters.fromDate) {
-            newsApiUrl += `&from=${appliedFilters.fromDate}T00:00:00`;
-          }
-          if (appliedFilters.toDate) {
-            newsApiUrl += `&to=${appliedFilters.toDate}T23:59:59`;
-          }
-
-          const response = await fetch(newsApiUrl);
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to fetch news from NewsAPI');
-          }
-          const data = await response.json();
-          fetchedArticles = data.articles.map(article => ({
-            title: article.title,
-            description: article.description,
-            url: article.url,
-            image: article.urlToImage,
-            publishedAt: article.publishedAt,
-            source: article.source.name,
-          }));
-          totalArticles = data.totalResults;
-        }
-
-        if (loadMore) {
-          setArticles((prevArticles) => [...prevArticles, ...fetchedArticles]);
-        } else {
-          setArticles(fetchedArticles);
-        }
-        setTotalResults(totalArticles);
-        setApiSource(source); // Update the UI to show the current API source
-        return true; // Indicate success
-
-      } catch (err) {
-        console.error(`Error fetching news from ${source}:`, err);
-        setError(err.message);
-        return false; // Indicate failure
+      // Call the serverless function
+      const response = await fetch(`/api/get-news?${params.toString()}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch news');
       }
-    };
 
-    const primarySource = appliedFilters.apiSource;
-    const fallbackOrder = ['gnews', 'thenewsapi', 'newsapi'];
-    let currentSourceIndex = fallbackOrder.indexOf(primarySource);
+      const data = await response.json();
 
-    let success = false;
-    while (!success && currentSourceIndex < fallbackOrder.length) {
-      const currentSource = fallbackOrder[currentSourceIndex];
-      console.log(`Attempting to fetch from ${currentSource}...`);
-      success = await attemptFetch(currentSource);
-      if (!success) {
-        currentSourceIndex++;
+      if (loadMore) {
+        setArticles((prevArticles) => [...prevArticles, ...data.articles]);
+      } else {
+        setArticles(data.articles);
       }
-    }
+      setTotalResults(data.totalResults);
+      setApiSource(data.apiSource); // Update the UI to show the current API source
 
-    if (!success) {
-      setError('All available APIs failed to fetch news. Please try again later.');
-      setArticles([]);
-      setTotalResults(0);
+    } catch (err) {
+      console.error('Error fetching news:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, [appliedFilters, page]);
 
   // Effect to trigger fetch when appliedFilters change
