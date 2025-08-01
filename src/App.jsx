@@ -117,6 +117,12 @@ const App = () => {
     };
   }, [searchTerm]);
 
+  useEffect(() => {
+    if (page > 1) {
+      fetchNews(true);
+    }
+  }, [page]);
+
   const handleLoadMore = () => {
     setPage(prevPage => prevPage + 1);
   };
