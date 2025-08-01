@@ -33,6 +33,9 @@ const App = () => {
     apiSource: localStorage.getItem('newsAppApiSource') || 'gnews',
   });
 
+  const pageSize = 10; // Number of articles per page
+  const totalPages = Math.ceil(totalResults / pageSize);
+
   // Effect to save preferences to localStorage
   useEffect(() => {
     localStorage.setItem('newsAppTopic', topic);
@@ -55,11 +58,8 @@ const App = () => {
     }
   }, [darkMode]);
 
-  const fetchNews = useCallback(async (loadMore = false) => {
-    // On initial load (not loadMore), set loading to true
-    if (!loadMore) {
-        setLoading(true);
-    }
+  const fetchNews = useCallback(async (currentPageNum) => {
+    setLoading(true);
     setError(null);
 
     try {
@@ -71,7 +71,7 @@ const App = () => {
         searchTerm,
         fromDate,
         toDate,
-        page,
+        page: currentPageNum,
         apiSource,
       });
 
@@ -83,11 +83,7 @@ const App = () => {
 
       const data = await response.json();
 
-      if (loadMore) {
-        setArticles((prevArticles) => [...prevArticles, ...data.articles]);
-      } else {
-        setArticles(data.articles);
-      }
+      setArticles(data.articles);
       setTotalResults(data.totalResults);
       setApiSource(data.apiSource);
 
@@ -97,24 +93,12 @@ const App = () => {
     } finally {
       setLoading(false);
     }
-  }, [appliedFilters, page]);
+  }, [appliedFilters]);
 
-  // Effect for the initial fetch or when filters change
+  // Effect for fetching news when filters or page change
   useEffect(() => {
-    // Reset page and articles before fetching
-    setPage(1);
-    setArticles([]);
-    setTotalResults(0);
-    fetchNews(false);
-  }, [appliedFilters, fetchNews]);
-
-  // Effect for loading more articles when page changes
-  useEffect(() => {
-    if (page > 1) {
-      fetchNews(true); // Call with loadMore = true
-    }
-  }, [page, fetchNews]);
-
+    fetchNews(page);
+  }, [page, appliedFilters, fetchNews]);
 
   // Debounce for search term
   useEffect(() => {
@@ -127,8 +111,9 @@ const App = () => {
     };
   }, [searchTerm]);
 
-  const handleLoadMore = () => {
-    setPage(prevPage => prevPage + 1);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
   };
 
   const handleScroll = () => {
@@ -149,6 +134,7 @@ const App = () => {
   }, []);
 
   const handleApplyFilters = () => {
+    setPage(1); // Reset to first page when filters are applied
     setAppliedFilters({
       topic,
       country,
@@ -179,6 +165,48 @@ const App = () => {
         console.error('Failed to copy:', error);
       }
     }
+  };
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 5; // Number of page buttons to display
+
+    let startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <nav aria-label="Page navigation">
+        <ul className="pagination justify-content-center mt-4">
+          <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+            <button className="page-link" onClick={() => handlePageChange(1)}>&laquo;</button>
+          </li>
+          <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+            <button className="page-link" onClick={() => handlePageChange(page - 1)}>&lsaquo;</button>
+          </li>
+          {pageNumbers.map(number => (
+            <li key={number} className={`page-item ${page === number ? 'active' : ''}`}>
+              <button onClick={() => handlePageChange(number)} className="page-link">
+                {number}
+              </button>
+            </li>
+          ))}
+          <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+            <button className="page-link" onClick={() => handlePageChange(page + 1)}>&rsaquo;</button>
+          </li>
+          <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+            <button className="page-link" onClick={() => handlePageChange(totalPages)}>&raquo;</button>
+          </li>
+        </ul>
+      </nav>
+    );
   };
 
   return (
@@ -348,11 +376,7 @@ const App = () => {
             </div>
         )}
 
-        {!loading && articles.length > 0 && articles.length < totalResults && (
-          <div className="text-center my-4">
-            <button className="btn btn-primary" onClick={handleLoadMore}>Load More</button>
-          </div>
-        )}
+        {!loading && articles.length > 0 && totalPages > 1 && renderPagination()}
       </div>
 
       {showBackToTop && (
