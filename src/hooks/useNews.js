@@ -43,6 +43,7 @@ const useNews = () => {
     } catch (err) {
       console.error('Error fetching news:', err);
       setError(err.message);
+      setArticles([]); // Clear articles on error
     } finally {
       setLoading(false);
     }
