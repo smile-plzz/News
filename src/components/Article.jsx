@@ -5,7 +5,7 @@ const Article = ({ article, handleShare }) => {
     <div className="col-md-4 mb-4">
       <div className="card h-100">
         <img 
-          src={article.image || 'https://via.placeholder.com/300x200?text=No+Image'} 
+          src={article.image || 'https://placehold.co/300x200?text=No+Image'} 
           className="card-img-top" 
           alt={article.title} 
           style={{ height: '200px', objectFit: 'cover' }} 

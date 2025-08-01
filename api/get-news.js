@@ -1,12 +1,12 @@
-
-
 const GNEWS_TOKEN = process.env.VITE_GNEWS_TOKEN;
 const NEWSAPI_KEY = process.env.VITE_NEWSAPI_KEY;
 const THENEWSAPI_TOKEN = process.env.VITE_THENEWSAPI_TOKEN;
 
 const apiConfigs = {
   gnews: {
+    token: GNEWS_TOKEN,
     buildUrl: ({ searchTerm, topic, country, language, page, fromDate, toDate }) => {
+      if (!GNEWS_TOKEN) throw new Error("GNews API key is missing.");
       let url;
       if (searchTerm) {
         url = `https://gnews.io/api/v4/search?q=${searchTerm}&token=${GNEWS_TOKEN}&lang=${language}&page=${page}`;
@@ -30,7 +30,9 @@ const apiConfigs = {
     }),
   },
   thenewsapi: {
+    token: THENEWSAPI_TOKEN,
     buildUrl: ({ searchTerm, topic, language, fromDate, toDate }) => {
+      if (!THENEWSAPI_TOKEN) throw new Error("TheNewsAPI key is missing.");
       let url;
       if (searchTerm) {
         url = `https://api.thenewsapi.com/v1/news/all?api_token=${THENEWSAPI_TOKEN}&search=${searchTerm}&language=${language}&limit=100`;
@@ -54,7 +56,9 @@ const apiConfigs = {
     }),
   },
   newsapi: {
+    token: NEWSAPI_KEY,
     buildUrl: ({ searchTerm, topic, country, language, page, fromDate, toDate }) => {
+      if (!NEWSAPI_KEY) throw new Error("NewsAPI key is missing.");
       let url;
       if (searchTerm) {
         url = `https://newsapi.org/v2/everything?q=${searchTerm}&apiKey=${NEWSAPI_KEY}&language=${language}&page=${page}`;
@@ -85,11 +89,22 @@ const fetchFromApi = async (source, params) => {
     throw new Error(`Invalid API source: ${source}`);
   }
 
+  // Check if API key is present before building URL
+  if (!config.token) {
+    throw new Error(`${source} API key is missing. Please configure it in your environment variables.`);
+  }
+
   const url = config.buildUrl(params);
   const res = await fetch(url);
 
   if (!res.ok) {
-    throw new Error(`${source} API error: ${res.statusText}`);
+    let errorMessage = `${source} API error: ${res.statusText}`;
+    if (res.status === 429) {
+      errorMessage = `You have exceeded the rate limit for ${source} API. Please try again later.`;
+    } else if (res.status === 401 || res.status === 403) {
+      errorMessage = `Authentication failed for ${source} API. Please check your API key.`;
+    }
+    throw new Error(errorMessage);
   }
 
   const data = await res.json();
