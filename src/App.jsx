@@ -340,12 +340,7 @@ const App = () => {
       <div className="container mt-4">
         <h1 className="my-4 text-center">Latest News</h1>
         <div className="row mb-4">
-          <div className="col-12 text-end d-md-none">
-            <button className="btn btn-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-              Toggle Filters
-            </button>
-          </div>
-          <div className="collapse show" id="filterCollapse">
+          <div className="col-12">
             <div className="row">
               <div className="col-md-3">
                 <label htmlFor="apiSource">API Source</label>
@@ -367,7 +362,7 @@ const App = () => {
                   <option value="sports">Sports</option>
                   <option value="science">Science</option>
                   <option value="health">Health</option>
-              <option value="international">International</option>
+                  <option value="international">International</option>
                 </select>
               </div>
               <div className="col-md-3">
