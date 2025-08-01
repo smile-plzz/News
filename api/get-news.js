@@ -134,27 +134,11 @@ export default async function handler(request, response) {
     apiSource = 'gnews'
   } = request.query;
 
-  const apiSources = ['gnews', 'thenewsapi', 'newsapi'];
-  let data = null;
-  let sourceUsed = null;
-
-  for (const source of apiSources) {
-    try {
-      data = await fetchFromApi(source, { topic, country, language, searchTerm, fromDate, toDate, page });
-      sourceUsed = source;
-      break; // Success, so exit the loop
-    } catch (error) {
-      console.error(`Error fetching from ${source}:`, error);
-      // If this is the primary source, and it fails, we can try the next one
-      if (source === apiSource) {
-        continue;
-      }
-    }
-  }
-
-  if (data) {
-    response.status(200).json({ ...data, apiSource: sourceUsed });
-  } else {
-    response.status(500).json({ error: 'Failed to fetch news from all available sources.' });
+  try {
+    const data = await fetchFromApi(apiSource, { topic, country, language, searchTerm, fromDate, toDate, page });
+    response.status(200).json({ ...data, apiSource: apiSource });
+  } catch (error) {
+    console.error(`Error fetching from ${apiSource}:`, error);
+    response.status(500).json({ error: error.message });
   }
 }
