@@ -21,9 +21,8 @@ const App = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [apiSource, setApiSource] = useState(() => localStorage.getItem('newsAppApiSource') || 'gnews');
-  
 
-  // New state for applied filters
+  // State for applied filters
   const [appliedFilters, setAppliedFilters] = useState({
     topic: localStorage.getItem('newsAppTopic') || 'general',
     country: localStorage.getItem('newsAppCountry') || 'us',
@@ -34,7 +33,7 @@ const App = () => {
     apiSource: localStorage.getItem('newsAppApiSource') || 'gnews',
   });
 
-  // Effect to save preferences to localStorage whenever they change
+  // Effect to save preferences to localStorage
   useEffect(() => {
     localStorage.setItem('newsAppTopic', topic);
   }, [topic]);
@@ -57,7 +56,10 @@ const App = () => {
   }, [darkMode]);
 
   const fetchNews = useCallback(async (loadMore = false) => {
-    setLoading(true);
+    // On initial load (not loadMore), set loading to true
+    if (!loadMore) {
+        setLoading(true);
+    }
     setError(null);
 
     try {
@@ -73,7 +75,6 @@ const App = () => {
         apiSource,
       });
 
-      // Call the serverless function
       const response = await fetch(`/api/get-news?${params.toString()}`);
       if (!response.ok) {
         const errorData = await response.json();
@@ -88,7 +89,7 @@ const App = () => {
         setArticles(data.articles);
       }
       setTotalResults(data.totalResults);
-      setApiSource(data.apiSource); // Update the UI to show the current API source
+      setApiSource(data.apiSource);
 
     } catch (err) {
       console.error('Error fetching news:', err);
@@ -98,37 +99,40 @@ const App = () => {
     }
   }, [appliedFilters, page]);
 
-  // Effect to trigger fetch when appliedFilters change
+  // Effect for the initial fetch or when filters change
   useEffect(() => {
-    setPage(1); // Reset page when filters change
-    setArticles([]); // Clear articles when filters change
-    setTotalResults(0); // Reset total results
-    fetchNews();
+    // Reset page and articles before fetching
+    setPage(1);
+    setArticles([]);
+    setTotalResults(0);
+    fetchNews(false);
   }, [appliedFilters, fetchNews]);
+
+  // Effect for loading more articles when page changes
+  useEffect(() => {
+    if (page > 1) {
+      fetchNews(true); // Call with loadMore = true
+    }
+  }, [page, fetchNews]);
+
 
   // Debounce for search term
   useEffect(() => {
     const handler = setTimeout(() => {
       setAppliedFilters(prev => ({ ...prev, searchTerm }));
-    }, 500); // 500ms debounce
+    }, 500);
 
     return () => {
       clearTimeout(handler);
     };
   }, [searchTerm]);
 
-  useEffect(() => {
-    if (page > 1) {
-      fetchNews(true);
-    }
-  }, [page]);
-
   const handleLoadMore = () => {
     setPage(prevPage => prevPage + 1);
   };
 
   const handleScroll = () => {
-    if (window.pageYOffset > 300) { // Show button after scrolling down 300px
+    if (window.pageYOffset > 300) {
       setShowBackToTop(true);
     } else {
       setShowBackToTop(false);
@@ -143,8 +147,6 @@ const App = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  
 
   const handleApplyFilters = () => {
     setAppliedFilters({
@@ -186,9 +188,9 @@ const App = () => {
           <a className="navbar-brand" href="#">DailyDigest</a>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              {/* Add more nav items here if needed */}
+              {/* Nav items */}
             </ul>
-            <form className="d-flex" onSubmit={(e) => { e.preventDefault(); setPage(1); fetchNews(); }}>
+            <form className="d-flex" onSubmit={(e) => { e.preventDefault(); handleApplyFilters(); }}>
               <input 
                 className="form-control me-2" 
                 type="search" 
@@ -290,7 +292,7 @@ const App = () => {
           </div>
         </div>
 
-        {loading ? (
+        {loading && articles.length === 0 ? (
           <div className="text-center">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
@@ -305,7 +307,7 @@ const App = () => {
           <div className="row">
             {articles.length > 0 ? (
               articles.map((article, index) => (
-                <div className="col-md-4 mb-4" key={index}>
+                <div className="col-md-4 mb-4" key={`${article.url}-${index}`}>
                   <div className="card h-100">
                     <img 
                       src={article.image || 'https://via.placeholder.com/300x200?text=No+Image'} 
@@ -336,6 +338,14 @@ const App = () => {
               </div>
             )}
           </div>
+        )}
+
+        {loading && articles.length > 0 && (
+            <div className="text-center">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
         )}
 
         {!loading && articles.length > 0 && articles.length < totalResults && (
