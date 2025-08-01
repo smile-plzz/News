@@ -110,26 +110,11 @@ export default async function handler(request, response) {
     }
   };
 
-  const fallbackOrder = ['gnews', 'thenewsapi', 'newsapi'];
-  let data = null;
-  let currentSource = apiSource;
-  let sourceIndex = fallbackOrder.indexOf(currentSource);
-
-  // Try the preferred source first, then fall back
-  for (let i = 0; i < fallbackOrder.length; i++) {
-    const sourceToTry = fallbackOrder[sourceIndex % fallbackOrder.length];
-    console.log(`Attempting to fetch from ${sourceToTry}...`);
-    data = await attemptFetch(sourceToTry);
-    if (data) {
-      currentSource = sourceToTry;
-      break;
-    }
-    sourceIndex++;
-  }
+  let data = await attemptFetch(apiSource);
 
   if (data) {
-    response.status(200).json({ ...data, apiSource: currentSource });
+    response.status(200).json({ ...data, apiSource: apiSource });
   } else {
-    response.status(500).json({ error: 'All news APIs failed to fetch data.' });
+    response.status(500).json({ error: `Failed to fetch news from ${apiSource}.` });
   }
 }

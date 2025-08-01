@@ -61,6 +61,8 @@ const App = () => {
   const fetchNews = useCallback(async (currentPageNum) => {
     setLoading(true);
     setError(null);
+    setArticles([]); // Clear articles on every fetch
+    setTotalResults(0); // Reset total results on every fetch
 
     try {
       const { topic, country, language, searchTerm, fromDate, toDate, apiSource } = appliedFilters;
