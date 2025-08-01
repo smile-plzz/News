@@ -26,9 +26,9 @@ export default async function handler(request, response) {
     apiSource = 'gnews'
   } = request.query;
 
-  const GNEWS_TOKEN = import.meta.env.VITE_GNEWS_TOKEN;
-  const NEWSAPI_KEY = import.meta.env.VITE_NEWSAPI_KEY;
-  const THENEWSAPI_TOKEN = import.meta.env.VITE_THENEWSAPI_TOKEN;
+  const GNEWS_TOKEN = process.env.VITE_GNEWS_TOKEN;
+  const NEWSAPI_KEY = process.env.VITE_NEWSAPI_KEY;
+  const THENEWSAPI_TOKEN = process.env.VITE_THENEWSAPI_TOKEN;
 
   const attemptFetch = async (source) => {
     let url;
