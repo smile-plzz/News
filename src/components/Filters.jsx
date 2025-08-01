@@ -1,6 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import AppContext from '../context/AppContext';
 
-const Filters = ({ apiSource, setApiSource, topic, setTopic, country, setCountry, language, setLanguage, fromDate, setFromDate, toDate, setToDate, handleApplyFilters }) => {
+const Filters = () => {
+  const { 
+    apiSource, setApiSource, 
+    topic, setTopic, 
+    country, setCountry, 
+    language, setLanguage, 
+    fromDate, setFromDate, 
+    toDate, setToDate 
+  } = useContext(AppContext);
+
+  const handleApplyFilters = () => {
+    // This function is now empty because the filters are applied automatically
+    // when the state changes in the AppContext.
+  };
+
   return (
     <div className="row mb-4">
       <div className="col-12">

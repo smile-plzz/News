@@ -9,6 +9,7 @@ const useLocalStorage = (key, initialValue) => {
     try {
       return JSON.parse(storedValue);
     } catch (error) {
+      console.error('Error parsing stored value:', error);
       return storedValue;
     }
   });

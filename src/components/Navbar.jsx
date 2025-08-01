@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import AppContext from '../context/AppContext';
 
-const Navbar = ({ darkMode, setDarkMode, searchTerm, setSearchTerm, handleApplyFilters }) => {
+const Navbar = () => {
+  const { darkMode, setDarkMode, searchTerm, setSearchTerm } = useContext(AppContext);
+
+  const handleApplyFilters = () => {
+    // This function is now empty because the filters are applied automatically
+    // when the state changes in the AppContext.
+  };
+
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container-fluid">

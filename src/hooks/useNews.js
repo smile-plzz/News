@@ -1,19 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
+import AppContext from '../context/AppContext';
 
-const useNews = (appliedFilters) => {
+const useNews = () => {
+  const { topic, country, language, searchTerm, fromDate, toDate, apiSource } = useContext(AppContext);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [apiSource, setApiSource] = useState(appliedFilters.apiSource);
 
   const fetchNews = useCallback(async (loadMore = false) => {
     setLoading(true);
     setError(null);
 
     try {
-      const { topic, country, language, searchTerm, fromDate, toDate, apiSource } = appliedFilters;
       const params = new URLSearchParams({
         topic,
         country,
@@ -39,7 +39,6 @@ const useNews = (appliedFilters) => {
         setArticles(data.articles);
       }
       setTotalResults(data.totalResults);
-      setApiSource(data.apiSource);
 
     } catch (err) {
       console.error('Error fetching news:', err);
@@ -47,14 +46,14 @@ const useNews = (appliedFilters) => {
     } finally {
       setLoading(false);
     }
-  }, [appliedFilters, page]);
+  }, [topic, country, language, searchTerm, fromDate, toDate, page, apiSource]);
 
   useEffect(() => {
     setPage(1);
     setArticles([]);
     setTotalResults(0);
     fetchNews(false);
-  }, [appliedFilters, fetchNews]);
+  }, [topic, country, language, searchTerm, fromDate, toDate, apiSource, fetchNews]);
 
   useEffect(() => {
     if (page > 1) {
@@ -66,7 +65,7 @@ const useNews = (appliedFilters) => {
     setPage(prevPage => prevPage + 1);
   };
 
-  return { articles, loading, error, page, totalResults, apiSource, handleLoadMore };
+  return { articles, loading, error, totalResults, handleLoadMore };
 };
 
 export default useNews;
