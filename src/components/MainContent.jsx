@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from './Navbar';
 import Filters from './Filters';
 import NewsList from './NewsList';
 import Spinner from './Spinner';
@@ -35,8 +34,6 @@ const MainContent = () => {
 
   return (
     <div>
-      <Navbar />
-
       <div className="container mt-4">
         <h1 className="my-4 text-center">Latest News</h1>
         <Filters />
