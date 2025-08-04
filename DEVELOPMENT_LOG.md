@@ -198,3 +198,18 @@
     -   Applied Neumorphic Minimalism to key UI elements (buttons, input fields, cards) in `src/App.css` and `src/index.css`.
     -   Refined global typography and color palette for a cleaner, more modern look.
 -   **Next Steps:** Commit and push changes.
+
+## August 4, 2025
+
+### Project Improvements and SEO Enhancements
+
+-   **Objective:** Enhance project maintainability, testability, and search engine optimization.
+-   **Changes Made:**
+    -   **Dependency Management:** Updated all npm packages to their latest versions and added the missing `deploy` script to `package.json` for GitHub Pages deployment.
+    -   **Testing Framework:** Integrated Vitest as a testing framework. Configured `vitest.config.js` and added a basic test setup file (`src/test/setup.js`) and an example test (`src/test/App.test.jsx`). Added `test` script to `package.json`.
+    -   **Code Quality & Accessibility:** Installed `eslint-plugin-jsx-a11y` and configured `eslint.config.js` to include accessibility checks. Fixed an accessibility issue in `src/components/Navbar.jsx` by replacing an `<a>` tag with a `<button>` for better semantic meaning and accessibility.
+    -   **SEO - Dynamic Metadata:** Installed `react-helmet-async` and integrated `HelmetProvider` into `src/main.jsx`. Added dynamic title and meta description tags to `App.jsx`.
+    -   **SEO - Semantic HTML:** Refactored `src/components/Article.jsx` to use `<article>` and `<time>` semantic HTML5 tags. Refactored `src/components/NewsList.jsx` to use a `<section>` tag.
+    -   **SEO - Image Alt Text:** Ensured images in `src/components/Article.jsx` have descriptive `alt` attributes.
+    -   **SEO - Structured Data:** Implemented Schema.org JSON-LD markup for `NewsArticle` within `src/components/Article.jsx` to provide explicit information to search engines.
+-   **Next Steps:** Continue with further refactoring (e.g., `App.jsx` layout) and implement `constants.js` and `prop-types` as previously discussed.

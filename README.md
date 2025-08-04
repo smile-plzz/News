@@ -25,6 +25,8 @@ This is a modern news application built with React and Vite, fetching news artic
 -   [Bootstrap](https://getbootstrap.com/)
 -   [Recharts](https://recharts.org/)
 -   [GitHub Pages](https://pages.github.com/)
+-   [Vitest](https://vitest.dev/) (for testing)
+-   [react-helmet-async](https://github.com/staylor/react-helmet-async) (for dynamic metadata)
 
 ## Getting Started
 
@@ -50,6 +52,7 @@ Make sure you have Node.js and npm (Node Package Manager) installed on your syst
     ```bash
     npm install
     ```
+    All project dependencies are kept up-to-date.
 
 ### Running the Development Server
 
@@ -70,6 +73,22 @@ npm run build
 ```
 
 This command bundles the React app into static files in the `dist` directory.
+
+### Running Tests
+
+To run the unit and component tests:
+
+```bash
+npm run test
+```
+
+### Linting and Accessibility Checks
+
+To run ESLint checks, including accessibility audits with `eslint-plugin-jsx-a11y`:
+
+```bash
+npm run lint
+```
 
 ## Deployment
 
@@ -110,6 +129,14 @@ For the application to fetch news data correctly, you must configure the followi
 -   `VITE_NEWSAPI_KEY`
 -   `VITE_THENEWSAPI_TOKEN`
 
+## SEO Enhancements
+
+This application has been optimized for Search Engine Optimization (SEO) through:
+-   **Dynamic Metadata:** Utilizes `react-helmet-async` for dynamic management of page titles and descriptions.
+-   **Semantic HTML:** Employs appropriate HTML5 semantic elements (`<article>`, `<section>`, `<time>`) for better content structure.
+-   **Structured Data:** Implements Schema.org JSON-LD markup for news articles to provide explicit information to search engines.
+-   **Image Alt Text:** Ensures all images have descriptive `alt` attributes for accessibility and search engine understanding.
+
 ## Project Structure
 
 ```
@@ -133,6 +160,9 @@ News/
 │   │   ├── useLocalStorage.js
 │   │   ├── useNews.js
 │   │   └── useScroll.js
+│   ├── test/                   # Unit and component tests
+│   │   ├── App.test.jsx
+│   │   └── setup.js
 │   ├── App.css
 │   ├── App.jsx
 │   ├── index.css
@@ -145,6 +175,7 @@ News/
 ├── package-lock.json
 ├── README.md
 ├── vite.config.js
+├── vitest.config.js            # Vitest configuration
 ├── vercel.json
 └── DEVELOPMENT_LOG.md
 ```

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import PropTypes from 'prop-types';
 
 const Article = ({ article, handleShare }) => {
   const schema = {
@@ -57,6 +58,18 @@ const Article = ({ article, handleShare }) => {
       </div>
     </article>
   );
+};
+
+Article.propTypes = {
+  article: PropTypes.shape({
+    title: PropTypes.string,
+    image: PropTypes.string,
+    description: PropTypes.string,
+    publishedAt: PropTypes.string,
+    author: PropTypes.string,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
+  handleShare: PropTypes.func.isRequired,
 };
 
 export default Article;
