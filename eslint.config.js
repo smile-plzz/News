@@ -42,4 +42,13 @@ export default defineConfig([
       },
     },
   },
+  {
+    files: ['**/*.test.jsx'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.vitest,
+      },
+    },
+  },
 ])
